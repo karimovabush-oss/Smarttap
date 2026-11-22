@@ -20,5 +20,5 @@ app.get('/api/public/:slug',async(req,res)=>{try{const c=await getClient(req.par
 app.get('/api/clients/:slug/qr',async(req,res)=>{try{const c=await getClient(req.params.slug);if(!c)return res.status(404).json({error:'Not found'});const url=req.protocol+'://'+req.get('host')+'/t/'+encodeURIComponent(c.slug);res.json({url,data:await QRCode.toDataURL(url,{width:640,margin:2})});}catch(e){res.status(500).json({error:'QR generation failed'});}});
 app.get('/t/:slug',async(req,res)=>{const c=await getClient(req.params.slug);if(!c)return res.status(404).sendFile(path.join(__dirname,'public','not-found.html'));res.sendFile(path.join(__dirname,'public','client.html'));});
 app.get('/admin',(req,res)=>res.sendFile(path.join(__dirname,'public','admin.html')));
-app.get('/',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
+app.get('/',(req,res)=>res.sendFile(path.join(__dirname,'index.html')));
 (async()=>{if(pool){try{await pool.query(fs.readFileSync(path.join(__dirname,'schema.sql'),'utf8'));console.log('Database schema ready');}catch(e){console.error('DB init:',e.message);}}app.listen(PORT,'0.0.0.0',()=>console.log('SMART TAP listening on '+PORT));})();
