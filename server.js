@@ -9,7 +9,14 @@ async function getClient(slug){if(pool)return(await pool.query('SELECT * FROM cl
 async function listClients(){if(pool)return(await pool.query('SELECT * FROM clients ORDER BY created_at DESC')).rows;return Array.from(memory.values());}
 async function saveClient(d,slug){
  const fields=['business_name','tagline','logo_url','phone','whatsapp','instagram','telegram','address','website','description','accent_color'],vals=fields.map(k=>d[k]||''),whiteLabel=d.white_label===true||d.white_label==='true';
- if(pool){const sql='INSERT INTO clients (slug,'+fields.join(',')+',white_label) VALUES ($1,'+fields.map((_,i)=>'}
+  if(pool){
+   const cols=['slug',...fields,'white_label'];
+   const allValues=[slug,...vals,whiteLabel];
+   const placeholders=allValues.map((_,i)=>'$'+(i+1)).join(',');
+   const updates=fields.map(k=>k+'=EXCLUDED.'+k).join(',');
+   const sql=`INSERT INTO clients (${cols.join(',')}) VALUES (${placeholders}) ON CONFLICT (slug) DO UPDATE SET ${updates},white_label=EXCLUDED.white_label,updated_at=NOW() RETURNING *`;
+   return (await pool.query(sql,allValues)).rows[0];
+  }
  const c={slug,...Object.fromEntries(fields.map((k,i)=>[k,vals[i]])),white_label:whiteLabel,is_active:true,created_at:new Date().toISOString()};memory.set(slug,c);return c;
 }
 function admin(req,res,next){if(!ADMIN_KEY)return res.status(503).json({error:'Set ADMIN_KEY in environment first'});if(req.get('x-admin-key')!==ADMIN_KEY)return res.status(401).json({error:'Unauthorized'});next();}
