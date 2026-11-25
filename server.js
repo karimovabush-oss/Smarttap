@@ -205,7 +205,7 @@ function extractSiteData(html, pageUrl) {
   }
 
   const phones = [];
-  const text = strip(html);
+  const text = strip(html.replace(/<script\\b[\\s\\S]*?<\\/script>/gi, ' ').replace(/<style\\b[\\s\\S]*?<\\/style>/gi, ' '));
   for (const match of text.matchAll(/(?:\+\s?\d{1,3}[\s().-]?)?(?:\(?\d{2,4}\)?[\s().-]?){2,4}\d{2,4}/g)) {
     const candidate = match[0].trim().replace(/\s+/g, ' ');
     const digits = candidate.replace(/\D/g, '');
