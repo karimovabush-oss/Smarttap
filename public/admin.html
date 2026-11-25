@@ -18,10 +18,39 @@ label{display:block;color:#d8cbd2;font-size:13px;margin-bottom:4px}input,textare
 .import-line button{white-space:nowrap}
 @media(max-width:650px){.import-line{grid-template-columns:1fr}.import-line button{width:100%}.import-badge{display:none}}
 
+
+[hidden]{display:none!important}
+.login-panel{max-width:470px;margin:9vh auto 0;padding:34px;background:linear-gradient(145deg,#211d26,#17161c);border-color:#4e3b55}
+.login-brand{font-size:27px;font-weight:900;letter-spacing:2px}.login-brand span{color:var(--accent)}
+.login-kicker{font-size:10px;letter-spacing:2.2px;color:#c9a6d8;margin-top:35px;font-weight:700}
+.login-panel h1{font-size:28px;margin:8px 0}.login-help{color:var(--muted);font-size:13px;margin:0 0 23px}
+.login-panel input{margin:6px 0 16px}.login-panel button{width:100%;padding:14px}
+.admin-top{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:8px 0 6px}.admin-top h1{margin:6px 0}.admin-top p{margin:0}.logout-btn{align-self:flex-start}
+.branch-editor{border:1px solid #4a3d49;border-radius:13px;padding:15px;margin:10px 0;background:#211d25}
+.branch-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;color:#f2e8ef}
+.branch-head button{padding:7px 11px}.branch-editor .grid{gap:9px}.branch-editor input{margin-bottom:8px}
+.branch-label{font-size:12px;color:#d8cbd2}
+.branch-note{font-size:12px;color:var(--muted);margin-top:8px}
+@media(max-width:650px){.login-panel{margin:5vh auto 0;padding:22px}.admin-top{align-items:flex-start}.admin-top h1{font-size:23px}.logout-btn{padding:10px 12px}}
+
 </style>
 </head>
 <body><main class="wrap">
-<div class="brand">SMART<span>TAP</span></div><h1>Панель администратора</h1><p class="muted">Управление цифровыми страницами клиентов.</p>
+<section id="loginScreen" class="panel login-panel">
+  <div class="login-brand">SMART<span>TAP</span></div>
+  <div class="login-kicker">SECURE ADMIN ACCESS</div>
+  <h1>Вход в админ-панель</h1>
+  <p class="login-help">Введи пароль администратора, чтобы управлять клиентами и филиалами.</p>
+  <form id="loginForm">
+    <label for="adminPassword">Пароль администратора</label>
+    <input id="adminPassword" type="password" autocomplete="current-password" required placeholder="Пароль">
+    <button type="submit" id="loginBtn">Войти в SMART TAP</button>
+    <p id="loginMsg" class="msg muted" aria-live="polite"></p>
+  </form>
+</section>
+<div id="adminApp" hidden>
+<div class="admin-top"><div><div class="brand">SMART<span>TAP</span></div><h1>Панель администратора</h1><p class="muted">Управление цифровыми страницами клиентов.</p></div><button type="button" class="secondary logout-btn" id="logoutBtn">Выйти</button></div>
+<p id="msg" class="muted msg" aria-live="polite"></p><h1>Панель администратора</h1><p class="muted">Управление цифровыми страницами клиентов.</p>
 <section class="panel">
 <label for="key">Ключ администратора</label><input id="key" type="password" placeholder="ADMIN_KEY" autocomplete="current-password">
 <button type="button" onclick="loadClients()">Войти / обновить</button><p id="msg" class="muted msg"></p>
@@ -60,6 +89,13 @@ label{display:block;color:#d8cbd2;font-size:13px;margin-bottom:4px}input,textare
 <div class="field"><label>Сайт</label><input name="website" type="url" placeholder="https://..."></div>
 </div>
 <div class="field" style="margin-top:12px"><label>Телефоны для звонка</label><div class="phone-list" id="phoneList"></div><button class="ghost" type="button" onclick="addPhone()">+ Добавить номер</button><div class="hint">Можно добавить до 10 номеров. Каждый будет отдельной кнопкой звонка на странице клиента.</div></div>
+
+<div class="field" style="margin-top:20px">
+  <div class="row-head"><h2>Филиалы</h2><span class="import-badge">До 20 филиалов</span></div>
+  <p class="branch-note">Добавь 2–3 филиала или больше. Для каждого можно указать название, адрес, ссылку на карту, часы работы и отдельный номер. Публичная страница покажет их отдельными карточками.</p>
+  <div id="branchesList"></div>
+  <button class="ghost" type="button" onclick="addBranch()">+ Добавить филиал</button>
+</div>
 <div style="margin-top:14px"><label>Короткий слоган</label><input name="tagline" placeholder="Например: Цветы с любовью"></div>
 <label>Описание</label><textarea name="description" rows="3" placeholder="Расскажите о бизнесе"></textarea>
 <label class="white-label"><input type="checkbox" name="white_label" value="true"> White Label — скрыть брендинг SMART TAP</label>
@@ -67,17 +103,75 @@ label{display:block;color:#d8cbd2;font-size:13px;margin-bottom:4px}input,textare
 </form>
 </section>
 <section class="panel"><h2>Клиенты</h2><div id="clients" class="muted">Войди, чтобы загрузить список.</div></section>
+</div>
 </main>
 <script>
-const key=()=>document.getElementById('key').value;
-const msg=t=>document.getElementById('msg').textContent=t;
+const msg=t=>{const el=document.getElementById('msg');if(el)el.textContent=t;};
+const loginMsg=t=>document.getElementById('loginMsg').textContent=t;
+const loginScreen=document.getElementById('loginScreen');
+const adminApp=document.getElementById('adminApp');
+const loginForm=document.getElementById('loginForm');
+async function showAdmin(){
+ loginScreen.hidden=true;adminApp.hidden=false;
+ await loadClients();
+}
+function showLogin(message=''){
+ adminApp.hidden=true;loginScreen.hidden=false;
+ if(message)loginMsg(message);
+ document.getElementById('adminPassword').focus();
+}
+async function checkSession(){
+ try{const r=await fetch('/api/admin/session',{credentials:'same-origin',cache:'no-store'});const d=await r.json();if(r.ok&&d.authenticated){await showAdmin();}else showLogin(d.error||'Войди, чтобы продолжить.');}
+ catch(e){showLogin('Не удалось связаться с сервером. Обнови страницу.');}
+}
+loginForm.addEventListener('submit',async event=>{
+ event.preventDefault();const button=document.getElementById('loginBtn');button.disabled=true;button.textContent='Проверка…';
+ try{
+  const r=await fetch('/api/admin/login',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({password:document.getElementById('adminPassword').value})});
+  const d=await r.json();if(!r.ok)throw Error(d.error||'Вход не выполнен');
+  document.getElementById('adminPassword').value='';loginMsg('');await showAdmin();
+ }catch(e){loginMsg(e.message);}
+ finally{button.disabled=false;button.textContent='Войти в SMART TAP';}
+});
+document.getElementById('logoutBtn').addEventListener('click',async()=>{
+ try{await fetch('/api/admin/logout',{method:'POST',credentials:'same-origin'});}finally{showLogin('Ты вышел из админ-панели.');}
+});
 let cachedClients=[],logoData='';
 const form=document.getElementById('form');
 const phoneList=document.getElementById('phoneList');
+const branchesList=document.getElementById('branchesList');
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function addPhone(value=''){if(phoneList.children.length>=10){msg('Можно добавить не более 10 номеров.');return;}const row=document.createElement('div');row.className='phone-row';row.innerHTML='<input type="tel" class="phone-input" placeholder="+998 90 123 45 67" value="'+esc(value)+'"><button type="button" class="secondary" aria-label="Удалить номер">×</button>';row.querySelector('button').addEventListener('click',()=>{row.remove();if(!phoneList.children.length)addPhone();});phoneList.appendChild(row);}
 function setPhones(values){phoneList.innerHTML='';(values&&values.length?values:['','']).slice(0,10).forEach(v=>addPhone(v));}
 function getPhones(){return Array.from(phoneList.querySelectorAll('.phone-input')).map(x=>x.value.trim()).filter(Boolean);}
+
+function addBranch(branch={}){
+ if(branchesList.children.length>=20){msg('Можно добавить не более 20 филиалов.');return;}
+ const index=branchesList.children.length+1;
+ const card=document.createElement('div');card.className='branch-editor';
+ card.innerHTML='<div class="branch-head"><strong>Филиал '+index+'</strong><button type="button" class="secondary">Удалить</button></div>'+
+ '<div class="grid">'+
+ '<div><label class="branch-label">Название филиала</label><input class="branch-name" type="text" maxlength="100" placeholder="Например: Филиал в центре"></div>'+
+ '<div><label class="branch-label">Адрес</label><input class="branch-address" type="text" maxlength="300" placeholder="Улица, дом, ориентир"></div>'+
+ '<div><label class="branch-label">Ссылка на карту</label><input class="branch-map" type="url" placeholder="https://maps..."></div>'+
+ '<div><label class="branch-label">Часы работы</label><input class="branch-hours" type="text" maxlength="120" placeholder="Ежедневно 09:00–21:00"></div>'+
+ '<div><label class="branch-label">Телефон филиала</label><input class="branch-phone" type="tel" maxlength="40" placeholder="+998 90 123 45 67"></div>'+
+ '</div>';
+ const fields=[['.branch-name','name'],['.branch-address','address'],['.branch-map','map_url'],['.branch-hours','hours'],['.branch-phone','phone']];
+ fields.forEach(([selector,key])=>{card.querySelector(selector).value=branch[key]||'';});
+ card.querySelector('button').addEventListener('click',()=>{card.remove();renumberBranches();});
+ branchesList.appendChild(card);renumberBranches();
+}
+function renumberBranches(){Array.from(branchesList.children).forEach((card,i)=>{const title=card.querySelector('.branch-head strong');if(title)title.textContent='Филиал '+(i+1);});}
+function setBranches(values){branchesList.innerHTML='';(Array.isArray(values)?values:[]).slice(0,20).forEach(addBranch);}
+function getBranches(){return Array.from(branchesList.children).map(card=>({
+ name:card.querySelector('.branch-name').value.trim(),
+ address:card.querySelector('.branch-address').value.trim(),
+ map_url:card.querySelector('.branch-map').value.trim(),
+ hours:card.querySelector('.branch-hours').value.trim(),
+ phone:card.querySelector('.branch-phone').value.trim()
+})).filter(b=>b.name||b.address||b.map_url||b.hours||b.phone);}
+
 function setLogoPreview(value){const preview=document.getElementById('logoPreview');if(value){preview.src=value;}else{preview.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 rx=%2216%22 fill=%22%23111116%22/%3E%3Ctext x=%2250%25%22 y=%2254%25%22 fill=%22%23958a91%22 font-size=%2213%22 text-anchor=%22middle%22%3E%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF%3C/text%3E%3C/svg%3E';}}
 function setAccent(value){const color=/^#[0-9a-f]{6}$/i.test(value||'')?value:'#8d5368';document.getElementById('accentColor').value=color;document.getElementById('colorValue').textContent=color.toUpperCase();}
 function extractAccent(img){
@@ -106,8 +200,8 @@ async function importSite(){
  const url=input.value.trim();if(!url){status.textContent='Сначала вставь ссылку на сайт.';return;}
  button.disabled=true;button.textContent='Читаю сайт…';status.textContent='Проверяю открытую страницу и ищу данные…';
  try{
-  const r=await fetch('/api/import-site',{method:'POST',headers:{'content-type':'application/json','x-admin-key':key()},body:JSON.stringify({url})});
-  const result=await r.json();if(!r.ok)throw Error(result.error||'Не удалось импортировать сайт');
+  const r=await fetch('/api/import-site',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({url})});
+  const result=await r.json();if(r.status===401){showLogin('Сессия завершилась. Войди ещё раз.');throw Error('Сначала войди в админ-панель.');}if(!r.ok)throw Error(result.error||'Не удалось импортировать сайт');
   const d=result.data||{};
   const setIfBlank=(name,value)=>{const el=form.elements[name];if(el&&value&&!String(el.value||'').trim())el.value=value;};
   setIfBlank('business_name',d.business_name);
@@ -133,10 +227,11 @@ async function importSite(){
  finally{button.disabled=false;button.textContent='Импортировать сайт';}
 }
 
-async function loadClients(){try{const r=await fetch('/api/clients',{headers:{'x-admin-key':key()},cache:'no-store'}),d=await r.json();if(!r.ok)throw Error(d.error);cachedClients=d;document.getElementById('clients').innerHTML=d.map(c=>'<div class="client"><div>'+(c.logo_url?'<img src="'+esc(c.logo_url)+'" alt="">':'')+'<b>'+esc(c.business_name)+'</b> — <a target="_blank" href="/t/'+encodeURIComponent(c.slug)+'">/t/'+esc(c.slug)+'</a> · <a target="_blank" href="/api/clients/'+encodeURIComponent(c.slug)+'/qr">QR</a></div><div class="client-actions"><button type="button" class="ghost" onclick="editClient(\''+esc(c.slug)+'\')">Изменить</button><button type="button" class="danger" onclick="deleteClient(\''+esc(c.slug)+'\')">Удалить</button></div></div>').join('')||'Пока клиентов нет';msg('Клиентов: '+d.length);}catch(e){msg(e.message);}}
-function editClient(slug){const c=cachedClients.find(x=>x.slug===slug);if(!c)return;for(const el of form.elements){if(!el.name)continue;if(el.name==='white_label'){el.checked=!!c.white_label;continue;}if(el.name==='accent_color')continue;if(el.name==='logo_url')continue;if(c[el.name]!==undefined)el.value=c[el.name]||'';}document.getElementById('originalSlug').value=slug;const phones=Array.isArray(c.phone_numbers)&&c.phone_numbers.length?c.phone_numbers:(c.phone?[c.phone]:['','']);setPhones(phones);logoData=c.logo_url||'';document.getElementById('logoUrl').value=(logoData.startsWith('data:image/')?'':logoData);document.getElementById('logoFile').value='';setLogoPreview(logoData);setAccent(c.accent_color);document.getElementById('formTitle').textContent='Изменить клиента: '+c.business_name;document.getElementById('saveBtn').textContent='Сохранить изменения';window.scrollTo({top:0,behavior:'smooth'});}
-function resetForm(){form.reset();document.getElementById('originalSlug').value='';logoData='';document.getElementById('logoFile').value='';document.getElementById('logoUrl').value='';setLogoPreview('');setAccent('#8d5368');setPhones(['','']);document.getElementById('formTitle').textContent='Добавить клиента';document.getElementById('saveBtn').textContent='Сохранить клиента';}
-async function deleteClient(slug){const c=cachedClients.find(x=>x.slug===slug);if(!confirm('Удалить клиента '+(c?.business_name||slug)+'? Это действие нельзя отменить.'))return;try{const r=await fetch('/api/clients/'+encodeURIComponent(slug),{method:'DELETE',headers:{'x-admin-key':key()}}),d=await r.json();if(!r.ok)throw Error(d.error);msg('Клиент удалён');resetForm();loadClients();}catch(e){msg(e.message);}}
-form.addEventListener('submit',async e=>{e.preventDefault();try{const data=Object.fromEntries(new FormData(form));data.phone_numbers=getPhones();data.phone=data.phone_numbers[0]||'';data.logo_url=logoData||document.getElementById('logoUrl').value.trim();data.white_label=!!form.elements.white_label.checked;const old=document.getElementById('originalSlug').value;if(old&&old!==data.slug){msg('Чтобы изменить адрес страницы, сначала создай новый адрес отдельно.');return;}msg('Сохраняю клиента…');const r=await fetch('/api/clients',{method:'POST',headers:{'content-type':'application/json','x-admin-key':key()},body:JSON.stringify(data)}),d=await r.json();if(!r.ok)throw Error(d.error);msg('Сохранено: /t/'+d.slug);resetForm();loadClients();}catch(x){msg(x.message);}});
+async function loadClients(){try{const r=await fetch('/api/clients',{credentials:'same-origin',cache:'no-store'}),d=await r.json();if(r.status===401){showLogin('Сессия завершилась. Войди ещё раз.');return;}if(!r.ok)throw Error(d.error);cachedClients=d;document.getElementById('clients').innerHTML=d.map(c=>'<div class="client"><div>'+(c.logo_url?'<img src="'+esc(c.logo_url)+'" alt="">':'')+'<b>'+esc(c.business_name)+'</b> — <a target="_blank" href="/t/'+encodeURIComponent(c.slug)+'">/t/'+esc(c.slug)+'</a> · <a target="_blank" href="/api/clients/'+encodeURIComponent(c.slug)+'/qr">QR</a></div><div class="client-actions"><button type="button" class="ghost" onclick="editClient(\''+esc(c.slug)+'\')">Изменить</button><button type="button" class="danger" onclick="deleteClient(\''+esc(c.slug)+'\')">Удалить</button></div></div>').join('')||'Пока клиентов нет';msg('Клиентов: '+d.length);}catch(e){msg(e.message);}}
+function editClient(slug){const c=cachedClients.find(x=>x.slug===slug);if(!c)return;for(const el of form.elements){if(!el.name)continue;if(el.name==='white_label'){el.checked=!!c.white_label;continue;}if(el.name==='accent_color')continue;if(el.name==='logo_url')continue;if(c[el.name]!==undefined)el.value=c[el.name]||'';}document.getElementById('originalSlug').value=slug;const phones=Array.isArray(c.phone_numbers)&&c.phone_numbers.length?c.phone_numbers:(c.phone?[c.phone]:['','']);setPhones(phones);setBranches(c.branches||[]);logoData=c.logo_url||'';document.getElementById('logoUrl').value=(logoData.startsWith('data:image/')?'':logoData);document.getElementById('logoFile').value='';setLogoPreview(logoData);setAccent(c.accent_color);document.getElementById('formTitle').textContent='Изменить клиента: '+c.business_name;document.getElementById('saveBtn').textContent='Сохранить изменения';window.scrollTo({top:0,behavior:'smooth'});}
+function resetForm(){form.reset();document.getElementById('originalSlug').value='';logoData='';document.getElementById('logoFile').value='';document.getElementById('logoUrl').value='';setLogoPreview('');setAccent('#8d5368');setPhones(['','']);setBranches([]);document.getElementById('formTitle').textContent='Добавить клиента';document.getElementById('saveBtn').textContent='Сохранить клиента';}
+async function deleteClient(slug){const c=cachedClients.find(x=>x.slug===slug);if(!confirm('Удалить клиента '+(c?.business_name||slug)+'? Это действие нельзя отменить.'))return;try{const r=await fetch('/api/clients/'+encodeURIComponent(slug),{method:'DELETE',credentials:'same-origin'}),d=await r.json();if(r.status===401){showLogin('Сессия завершилась. Войди ещё раз.');return;}if(!r.ok)throw Error(d.error);msg('Клиент удалён');resetForm();loadClients();}catch(e){msg(e.message);}}
+form.addEventListener('submit',async e=>{e.preventDefault();try{const data=Object.fromEntries(new FormData(form));data.phone_numbers=getPhones();data.phone=data.phone_numbers[0]||'';data.branches=getBranches();data.logo_url=logoData||document.getElementById('logoUrl').value.trim();data.white_label=!!form.elements.white_label.checked;const old=document.getElementById('originalSlug').value;if(old&&old!==data.slug){msg('Чтобы изменить адрес страницы, сначала создай новый адрес отдельно.');return;}msg('Сохраняю клиента…');const r=await fetch('/api/clients',{method:'POST',headers:{'content-type':'application/json','x-admin-key':key()},body:JSON.stringify(data)}),d=await r.json();if(r.status===401){showLogin('Сессия завершилась. Войди ещё раз.');throw Error('Сначала войди в админ-панель.');}if(!r.ok)throw Error(d.error);msg('Сохранено: /t/'+d.slug);resetForm();loadClients();}catch(x){msg(x.message);}});
 setPhones(['','']);
+checkSession();
 </script></body></html>
