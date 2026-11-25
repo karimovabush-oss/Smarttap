@@ -150,16 +150,23 @@
 
     .projects-section{background:linear-gradient(180deg,#0b0e0c,#111713);border-block:1px solid #202a23}
     .projects-top{display:flex;align-items:end;justify-content:space-between;gap:25px}
-    .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
-    .project-card{position:relative;display:flex;flex-direction:column;min-height:285px;padding:25px;border:1px solid #334036;border-radius:21px;background:linear-gradient(145deg,#1a211c,#121714);overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s}
-    .project-card:hover{transform:translateY(-4px);border-color:#7eaa53;box-shadow:0 18px 48px #0005}
-    .project-card:after{content:"";position:absolute;width:180px;height:180px;border:1px solid #c6ff6515;border-radius:50%;right:-95px;top:-95px;box-shadow:0 0 0 23px #c6ff6508,0 0 0 48px #c6ff6505;pointer-events:none}
-    .project-index{display:flex;align-items:center;justify-content:space-between;color:var(--lime);font-size:10px;font-weight:800;letter-spacing:1.7px}
-    .project-mark{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;margin:28px 0 17px;background:#c6ff6514;border:1px solid #c6ff6524;color:var(--lime);font:800 16px Manrope}
-    .project-card h3{font:800 22px Manrope;letter-spacing:-.6px;margin:0 0 8px}
-    .project-card p{font-size:13px;line-height:1.7;color:var(--muted);margin:0 0 22px;max-width:290px}
-    .project-link{margin-top:auto;display:inline-flex;align-items:center;gap:9px;color:var(--lime);font-size:12px;font-weight:800}
-    .project-link span{font-size:17px;transition:transform .2s}.project-card:hover .project-link span{transform:translate(3px,-2px)}
+    .projects-preview-list{display:grid;gap:28px;margin-top:42px}
+    .project-preview{border:1px solid #334036;border-radius:23px;background:linear-gradient(145deg,#171e19,#101512);padding:17px;overflow:hidden;box-shadow:0 18px 50px #0003}
+    .project-preview-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:3px 4px 16px}
+    .project-title-group{display:flex;align-items:center;gap:14px;min-width:0}
+    .project-mark{width:48px;height:48px;flex:0 0 48px;border-radius:15px;display:grid;place-items:center;background:#c6ff6514;border:1px solid #c6ff6524;color:var(--lime);font:800 16px Manrope}
+    .project-index{color:var(--lime);font-size:9px;font-weight:800;letter-spacing:1.7px}
+    .project-preview h3{font:800 21px Manrope;letter-spacing:-.6px;margin:2px 0}
+    .project-preview-head p{font-size:11px;line-height:1.5;color:var(--muted);margin:0}
+    .preview-open{font-size:11px;color:var(--lime);font-weight:700;white-space:nowrap;padding:9px 12px;border:1px solid #43513f;border-radius:10px}
+    .project-browser{background:#f6f4f0;border:1px solid #465347;border-radius:15px;overflow:hidden}
+    .browser-bar{height:34px;background:#1d241f;display:flex;align-items:center;gap:13px;padding:0 12px;border-bottom:1px solid #3a453c}
+    .browser-dots{display:flex;gap:5px}.browser-dots i{width:7px;height:7px;background:#718071;border-radius:50%}
+    .browser-address{flex:1;min-width:0;text-align:center;font-size:10px;color:#aab5ac;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .browser-state{font-size:8px;color:#c6ff65;font-weight:800;letter-spacing:1px}
+    .project-browser iframe{display:block;width:100%;height:720px;border:0;background:#fff}
+    .preview-note{color:#87938a;font-size:11px;margin:17px 3px 0}
+    
     .contact-section{background:#101512;border-top:1px solid #263229}
     .contact-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:25px;align-items:stretch;margin-top:36px}
     .contact-card{border:1px solid #354239;border-radius:22px;padding:29px;background:linear-gradient(145deg,#19211b,#121714)}
@@ -183,8 +190,8 @@
       .nav-links{gap:16px}.hero-grid{gap:24px}.showcase-grid{gap:35px}.audience-grid{grid-template-columns:repeat(2,1fr)}
       h1{font-size:clamp(48px,7vw,72px)}
     }
-    @media(max-width:980px){.projects-grid{grid-template-columns:repeat(2,1fr)}.projects-top{display:block}.contact-grid{grid-template-columns:1fr 1fr}}
-    @media(max-width:740px){.projects-grid{grid-template-columns:1fr}.project-card{min-height:240px}.contact-grid{grid-template-columns:1fr}.contact-card{padding:24px}}
+    @media(max-width:980px){.projects-preview-list{gap:20px}.projects-top{display:block}.contact-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:740px){.projects-preview-list{gap:16px}.project-preview{padding:10px}.project-preview-head{align-items:flex-start}.project-browser iframe{height:660px}.preview-open{font-size:0;padding:8px 10px}.preview-open:first-letter{font-size:11px}.contact-grid{grid-template-columns:1fr}.contact-card{padding:24px}}
     @media(max-width:740px){
       .container{width:min(100% - 32px,var(--max))}.section{padding:78px 0}
       .nav{height:auto;min-height:70px;flex-wrap:wrap;padding:16px 0}.nav-links{order:3;width:100%;overflow:auto;padding:3px 0 5px;gap:22px;white-space:nowrap;font-size:12px}
@@ -336,29 +343,45 @@
             <p class="section-copy">Посмотрите, как цифровое присутствие может выглядеть для разных направлений бизнеса.</p>
           </div>
         </div>
-        <div class="projects-grid">
-          <a class="project-card" href="https://flora.smarttap.uz" target="_blank" rel="noopener">
-            <div class="project-index"><span>PROJECT / 01</span><span>↗</span></div>
-            <div class="project-mark">FS</div>
-            <h3>Flora Shop</h3>
-            <p>Цветочный магазин. Каталог, контакты и удобные способы связи с клиентами.</p>
-            <span class="project-link">Открыть проект <span>↗</span></span>
-          </a>
-          <a class="project-card" href="https://feruza.smarttap.uz" target="_blank" rel="noopener">
-            <div class="project-index"><span>PROJECT / 02</span><span>↗</span></div>
-            <div class="project-mark">FF</div>
-            <h3>Feruza Flowers</h3>
-            <p>Цветочный бренд с Instagram, Telegram, телефонами и адресом на карте.</p>
-            <span class="project-link">Открыть проект <span>↗</span></span>
-          </a>
-          <a class="project-card" href="https://smarttap.uz/t/sladkiymir" target="_blank" rel="noopener">
-            <div class="project-index"><span>PROJECT / 03</span><span>↗</span></div>
-            <div class="project-mark">SM</div>
-            <h3>Sladkiy Mir</h3>
-            <p>Кондитерский бренд: ассортимент, цены, филиалы и контакты для заказов.</p>
-            <span class="project-link">Открыть проект <span>↗</span></span>
-          </a>
+        <div class="projects-preview-list">
+          <article class="project-preview">
+            <div class="project-preview-head">
+              <div class="project-title-group">
+                <div class="project-mark">FS</div>
+                <div><div class="project-index">PROJECT / 01</div><h3>Flora Shop</h3><p>Цветочный магазин · каталог и контакты</p></div>
+              </div>
+              <a class="preview-open" href="https://flora.smarttap.uz" target="_blank" rel="noopener">Открыть отдельно ↗</a>
+            </div>
+            <div class="project-browser"><div class="browser-bar"><span class="browser-dots"><i></i><i></i><i></i></span><span class="browser-address">flora.smarttap.uz</span><span class="browser-state">LIVE PREVIEW</span></div>
+              <iframe src="https://flora.smarttap.uz/" title="Flora Shop — встроенный просмотр сайта" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="fullscreen"></iframe>
+            </div>
+          </article>
+          <article class="project-preview">
+            <div class="project-preview-head">
+              <div class="project-title-group">
+                <div class="project-mark">FF</div>
+                <div><div class="project-index">PROJECT / 02</div><h3>Feruza Flowers</h3><p>Цветочный бренд · контакты и адрес</p></div>
+              </div>
+              <a class="preview-open" href="https://feruza.smarttap.uz" target="_blank" rel="noopener">Открыть отдельно ↗</a>
+            </div>
+            <div class="project-browser"><div class="browser-bar"><span class="browser-dots"><i></i><i></i><i></i></span><span class="browser-address">feruza.smarttap.uz</span><span class="browser-state">LIVE PREVIEW</span></div>
+              <iframe src="https://feruza.smarttap.uz/" title="Feruza Flowers — встроенный просмотр сайта" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="fullscreen"></iframe>
+            </div>
+          </article>
+          <article class="project-preview">
+            <div class="project-preview-head">
+              <div class="project-title-group">
+                <div class="project-mark">SM</div>
+                <div><div class="project-index">PROJECT / 03</div><h3>Sladkiy Mir</h3><p>Кондитерский бренд · меню, цены и филиалы</p></div>
+              </div>
+              <a class="preview-open" href="https://smarttap.uz/t/sladkiymir" target="_blank" rel="noopener">Открыть отдельно ↗</a>
+            </div>
+            <div class="project-browser"><div class="browser-bar"><span class="browser-dots"><i></i><i></i><i></i></span><span class="browser-address">smarttap.uz/t/sladkiymir</span><span class="browser-state">LIVE PREVIEW</span></div>
+              <iframe src="https://smarttap.uz/t/sladkiymir" title="Sladkiy Mir — встроенный просмотр страницы" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="fullscreen"></iframe>
+            </div>
+          </article>
         </div>
+        <p class="preview-note">Это живые сайты, встроенные в SMART TAP. Можно прокручивать каждое окно и просматривать страницы здесь, не покидая главную.</p>
       </div>
     </section>
 
