@@ -205,7 +205,7 @@ function extractSiteData(html, pageUrl) {
   }
 
   const phones = [];
-  const text = strip(html.replace(/<script\\b[\\s\\S]*?<\\/script>/gi, ' ').replace(/<style\\b[\\s\\S]*?<\\/style>/gi, ' '));
+  const text = strip(html.replace(/<script\b[\s\S]*?<\/script>/gi, ' ').replace(/<style\b[\s\S]*?<\/style>/gi, ' '));
   for (const match of text.matchAll(/(?:\+\s?\d{1,3}[\s().-]?)?(?:\(?\d{2,4}\)?[\s().-]?){2,4}\d{2,4}/g)) {
     const candidate = match[0].trim().replace(/\s+/g, ' ');
     const digits = candidate.replace(/\D/g, '');
@@ -231,6 +231,7 @@ function extractSiteData(html, pageUrl) {
     instagram: findLink(/instagram\.com/i),
     telegram: findLink(/(?:t\.me|telegram\.me)/i),
     whatsapp: findLink(/(?:wa\.me|api\.whatsapp\.com|whatsapp\.com)/i),
+    address: findLink(/(?:maps\.app\.goo\.gl|google\.[^/]+\/maps|yandex\.[^/]+\/maps|2gis\.)/i),
     website: pageUrl,
     accent_color: /^#[0-9a-f]{6}$/i.test(metas['theme-color'] || '') ? metas['theme-color'] : ''
   };
