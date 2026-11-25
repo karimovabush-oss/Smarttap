@@ -539,14 +539,15 @@
   let node;
   while((node=walker.nextNode())){
     const value=node.nodeValue.trim();
-    if(value) original.set(node, value);
+    if(value) original.set(node, {raw:node.nodeValue, key:value});
   }
   function setLanguage(lang){
     const dict=translations[lang]||{};
-    original.forEach((value,node)=>{
+    original.forEach((entry,node)=>{
       if(!node.isConnected)return;
-      const translated=dict[value];
-      if(translated) node.nodeValue=node.nodeValue.replace(value,translated);
+      node.nodeValue=entry.raw;
+      const translated=dict[entry.key];
+      if(translated) node.nodeValue=node.nodeValue.replace(entry.key,translated);
     });
     document.documentElement.lang=lang;
     document.title=lang==="ru"?"SMART TAP — Ваш бизнес. В одном касании.":lang==="en"?"SMART TAP — Your Business. One Tap.":"SMART TAP — Biznesingiz. Bir tegishda.";
