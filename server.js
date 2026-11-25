@@ -5,10 +5,14 @@ const { Pool } = require('pg');
 const QRCode = require('qrcode');
 const dns = require('node:dns').promises;
 const net = require('node:net');
+const crypto = require('node:crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_KEY = process.env.ADMIN_KEY || '';
+const ADMIN_COOKIE = 'smarttap_admin_session';
+const ADMIN_SESSION_SECONDS = 12 * 60 * 60;
+const loginAttempts = new Map();
 const DATABASE_URL = process.env.DATABASE_URL || '';
 const pool = DATABASE_URL ? new Pool({
   connectionString: DATABASE_URL,
@@ -27,6 +31,17 @@ const slugify = value => String(value || '').toLowerCase().trim()
 function normalizePhones(data) {
   const source = Array.isArray(data.phone_numbers) ? data.phone_numbers : (data.phone ? [data.phone] : []);
   return source.map(value => String(value || '').trim()).filter(Boolean).slice(0, 10);
+}
+
+function normalizeBranches(data) {
+  const source = Array.isArray(data.branches) ? data.branches : [];
+  return source.slice(0, 20).map((branch, index) => ({
+    name: String(branch.name || ('Филиал ' + (index + 1))).trim().slice(0, 100),
+    address: String(branch.address || '').trim().slice(0, 300),
+    map_url: safeHttpUrl(branch.map_url),
+    hours: String(branch.hours || '').trim().slice(0, 120),
+    phone: String(branch.phone || '').trim().slice(0, 40)
+  })).filter(branch => branch.name || branch.address || branch.map_url || branch.hours || branch.phone);
 }
 
 function safeHttpUrl(value) {
@@ -66,6 +81,7 @@ async function listClients() {
 
 async function saveClient(data, slug) {
   const phones = normalizePhones(data);
+  const branches = normalizeBranches(data);
   const fields = ['business_name', 'tagline', 'logo_url', 'phone', 'whatsapp',
     'instagram', 'telegram', 'address', 'website', 'description', 'accent_color'];
   const values = fields.map(field => {
@@ -80,29 +96,105 @@ async function saveClient(data, slug) {
   const whiteLabel = data.white_label === true || data.white_label === 'true';
 
   if (pool) {
-    const columns = ['slug'].concat(fields, ['phone_numbers', 'white_label']);
-    const allValues = [slug].concat(values, [JSON.stringify(phones), whiteLabel]);
+    const columns = ['slug'].concat(fields, ['phone_numbers', 'branches', 'white_label']);
+    const allValues = [slug].concat(values, [JSON.stringify(phones), JSON.stringify(branches), whiteLabel]);
     const placeholders = allValues.map((value, index) => '$' + (index + 1)).join(', ');
     const updates = fields.map(field => field + ' = EXCLUDED.' + field).join(', ');
     const sql = 'INSERT INTO clients (' + columns.join(', ') + ') VALUES (' + placeholders + ') ' +
       'ON CONFLICT (slug) DO UPDATE SET ' + updates +
-      ', phone_numbers = EXCLUDED.phone_numbers, white_label = EXCLUDED.white_label, updated_at = NOW() RETURNING *';
+      ', phone_numbers = EXCLUDED.phone_numbers, branches = EXCLUDED.branches, white_label = EXCLUDED.white_label, updated_at = NOW() RETURNING *';
     return (await pool.query(sql, allValues)).rows[0];
   }
 
   const client = { slug };
   fields.forEach((field, index) => { client[field] = values[index]; });
   client.phone_numbers = phones;
+  client.branches = branches;
   client.white_label = whiteLabel;
   client.is_active = true;
   client.created_at = new Date().toISOString();
   memory.set(slug, client);
   return client;
 }
+ 
+function createAdminToken() {
+  const payload = Buffer.from(JSON.stringify({
+    exp: Math.floor(Date.now() / 1000) + ADMIN_SESSION_SECONDS
+  })).toString('base64url');
+  const signature = crypto.createHmac('sha256', ADMIN_KEY).update(payload).digest('base64url');
+  return payload + '.' + signature;
+}
+
+function validAdminToken(req) {
+  if (!ADMIN_KEY) return false;
+  const cookieHeader = req.headers.cookie || '';
+  const cookies = Object.fromEntries(cookieHeader.split(';').map(part => {
+    const index = part.indexOf('=');
+    return index < 0 ? [part.trim(), ''] : [part.slice(0, index).trim(), decodeURIComponent(part.slice(index + 1).trim())];
+  }));
+  const token = cookies[ADMIN_COOKIE] || '';
+  const [payload, signature] = token.split('.');
+  if (!payload || !signature) return false;
+  const expected = crypto.createHmac('sha256', ADMIN_KEY).update(payload).digest();
+  let provided;
+  try { provided = Buffer.from(signature, 'base64url'); } catch (_) { return false; }
+  if (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) return false;
+  try {
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return Number.isFinite(data.exp) && data.exp > Math.floor(Date.now() / 1000);
+  } catch (_) { return false; }
+}
+
+function setAdminCookie(res, token) {
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  res.setHeader('Set-Cookie', ADMIN_COOKIE + '=' + encodeURIComponent(token) +
+    '; HttpOnly; Path=/; SameSite=Strict; Max-Age=' + ADMIN_SESSION_SECONDS + secure);
+}
+
+function clearAdminCookie(res) {
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  res.setHeader('Set-Cookie', ADMIN_COOKIE + '=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0' + secure);
+}
+
+app.post('/api/admin/login', (req, res) => {
+  if (!ADMIN_KEY) return res.status(503).json({ error: 'ADMIN_KEY не настроен в Render Environment' });
+  const now = Date.now();
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const attempt = loginAttempts.get(ip);
+  if (attempt && attempt.blockedUntil > now) {
+    return res.status(429).json({ error: 'Слишком много попыток. Попробуй позже.' });
+  }
+  const supplied = crypto.createHash('sha256').update(String(req.body.password || '')).digest();
+  const expected = crypto.createHash('sha256').update(ADMIN_KEY).digest();
+  if (!crypto.timingSafeEqual(supplied, expected)) {
+    const count = (attempt && attempt.windowUntil > now ? attempt.count : 0) + 1;
+    loginAttempts.set(ip, {
+      count,
+      windowUntil: now + 15 * 60 * 1000,
+      blockedUntil: count >= 8 ? now + 15 * 60 * 1000 : 0
+    });
+    return res.status(401).json({ error: 'Неверный пароль администратора' });
+  }
+  loginAttempts.delete(ip);
+  setAdminCookie(res, createAdminToken());
+  res.set('Cache-Control', 'no-store');
+  res.json({ ok: true, expiresIn: ADMIN_SESSION_SECONDS });
+});
+
+app.get('/api/admin/session', (req, res) => {
+  if (!ADMIN_KEY) return res.status(503).json({ authenticated: false, error: 'ADMIN_KEY не настроен' });
+  res.set('Cache-Control', 'no-store');
+  res.json({ authenticated: validAdminToken(req) });
+});
+
+app.post('/api/admin/logout', (req, res) => {
+  clearAdminCookie(res);
+  res.json({ ok: true });
+});
 
 function requireAdmin(req, res, next) {
-  if (!ADMIN_KEY) return res.status(503).json({ error: 'Set ADMIN_KEY in environment first' });
-  if (req.get('x-admin-key') !== ADMIN_KEY) return res.status(401).json({ error: 'Unauthorized' });
+  if (!ADMIN_KEY) return res.status(503).json({ error: 'Set ADMIN_KEY in Render Environment first' });
+  if (!validAdminToken(req)) return res.status(401).json({ error: 'Нужна авторизация администратора' });
   next();
 }
 
@@ -361,6 +453,21 @@ app.get('/t/:slug', async (req, res) => {
     add('web', 'Официальный сайт', client.website, 'Перейти на сайт');
     add('map', 'Как добраться', client.address, 'Открыть карту');
 
+    const branches = Array.isArray(client.branches) ? client.branches : [];
+    const branchCards = branches.map((branch, index) => {
+      const mapUrl = safeHttpUrl(branch.map_url);
+      const tel = phoneHref(branch.phone);
+      return '<article class="branch-card"><div class="branch-number">0' + (index + 1) + '</div>' +
+        '<div class="branch-info"><h3>' + escapeHtml(branch.name || ('Филиал ' + (index + 1))) + '</h3>' +
+        (branch.address ? '<p>' + escapeHtml(branch.address) + '</p>' : '') +
+        (branch.hours ? '<small>' + escapeHtml(branch.hours) + '</small>' : '') +
+        '<div class="branch-actions">' +
+        (mapUrl ? '<a href="' + escapeHtml(mapUrl) + '" target="_blank" rel="noopener noreferrer">Открыть карту ↗</a>' : '') +
+        (tel ? '<a href="' + escapeHtml(tel) + '">Позвонить ' + escapeHtml(branch.phone) + '</a>' : '') +
+        '</div></div></article>';
+    }).join('');
+    const branchSection = branchCards ? '<section class="branch-section"><div class="branch-heading"><span>OUR LOCATIONS</span><h2>Наши филиалы</h2></div><div class="branch-grid">' + branchCards + '</div></section>' : '';
+
     const footer = client.white_label ? '' :
       '<footer class="powered"><span class="powered-mark">ST</span><span>SMART TAP</span><i>Digital identity for business</i></footer>';
     const initials = escapeHtml(String(client.business_name || 'ST').trim().split(/\s+/).slice(0,2).map(part => part[0] || '').join('').toUpperCase());
@@ -397,7 +504,7 @@ app.get('/t/:slug', async (req, res) => {
         (item.href.startsWith('tel:') ? '' : 'target="_blank" rel="noopener noreferrer"') + '><span class="link-icon">' + icon[item.kind] +
         '</span><span class="link-copy"><strong>' + escapeHtml(item.label) + '</strong>' +
         (item.detail ? '<small>' + escapeHtml(item.detail) + '</small>' : '') + '</span><span class="arrow">↗</span></a>').join('') +
-      '</nav>' + footer + '</aside></section><div class="bottomline">' + (client.white_label ? escapeHtml(client.business_name) : 'A premium digital business card · SMART TAP') +
+      '</nav>' + footer + '</aside>' + branchSection + '</section><div class="bottomline">' + (client.white_label ? escapeHtml(client.business_name) : 'A premium digital business card · SMART TAP') +
       '</div></main></body></html>';
 
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -417,6 +524,7 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
       await pool.query(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
       await pool.query('ALTER TABLE clients ADD COLUMN IF NOT EXISTS white_label BOOLEAN NOT NULL DEFAULT FALSE');
       await pool.query("ALTER TABLE clients ADD COLUMN IF NOT EXISTS phone_numbers JSONB NOT NULL DEFAULT '[]'::jsonb");
+      await pool.query("ALTER TABLE clients ADD COLUMN IF NOT EXISTS branches JSONB NOT NULL DEFAULT '[]'::jsonb");
       console.log('Database schema ready');
     } catch (error) {
       console.error('DB init:', error);
