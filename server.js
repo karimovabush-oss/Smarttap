@@ -128,11 +128,9 @@ function createAdminToken() {
 function validAdminToken(req) {
   if (!ADMIN_KEY) return false;
   const cookieHeader = req.headers.cookie || '';
-  const cookies = Object.fromEntries(cookieHeader.split(';').map(part => {
-    const index = part.indexOf('=');
-    return index < 0 ? [part.trim(), ''] : [part.slice(0, index).trim(), decodeURIComponent(part.slice(index + 1).trim())];
-  }));
-  const token = cookies[ADMIN_COOKIE] || '';
+  const match = cookieHeader.match(/(?:^|;\\s*)smarttap_admin_session=([^;]*)/);
+  let token = '';
+  try { token = match ? decodeURIComponent(match[1]) : ''; } catch (_) { return false; }
   const [payload, signature] = token.split('.');
   if (!payload || !signature) return false;
   const expected = crypto.createHmac('sha256', ADMIN_KEY).update(payload).digest();
@@ -145,14 +143,14 @@ function validAdminToken(req) {
   } catch (_) { return false; }
 }
 
-function setAdminCookie(res, token) {
-  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+function setAdminCookie(res, token, req) {
+  const secure = (req && req.secure) || process.env.NODE_ENV === 'production' ? '; Secure' : '';
   res.setHeader('Set-Cookie', ADMIN_COOKIE + '=' + encodeURIComponent(token) +
     '; HttpOnly; Path=/; SameSite=Strict; Max-Age=' + ADMIN_SESSION_SECONDS + secure);
 }
 
-function clearAdminCookie(res) {
-  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+function clearAdminCookie(res, req) {
+  const secure = (req && req.secure) || process.env.NODE_ENV === 'production' ? '; Secure' : '';
   res.setHeader('Set-Cookie', ADMIN_COOKIE + '=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0' + secure);
 }
 
@@ -176,7 +174,7 @@ app.post('/api/admin/login', (req, res) => {
     return res.status(401).json({ error: 'Неверный пароль администратора' });
   }
   loginAttempts.delete(ip);
-  setAdminCookie(res, createAdminToken());
+  setAdminCookie(res, createAdminToken(), req);
   res.set('Cache-Control', 'no-store');
   res.json({ ok: true, expiresIn: ADMIN_SESSION_SECONDS });
 });
@@ -188,7 +186,7 @@ app.get('/api/admin/session', (req, res) => {
 });
 
 app.post('/api/admin/logout', (req, res) => {
-  clearAdminCookie(res);
+  clearAdminCookie(res, req);
   res.json({ ok: true });
 });
 
