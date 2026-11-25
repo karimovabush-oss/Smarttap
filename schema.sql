@@ -1,4 +1,23 @@
-CREATE TABLE IF NOT EXISTS clients (id BIGSERIAL PRIMARY KEY, slug VARCHAR(80) UNIQUE NOT NULL, business_name VARCHAR(160) NOT NULL, tagline VARCHAR(240) DEFAULT '', logo_url TEXT DEFAULT '', phone VARCHAR(40) DEFAULT '', whatsapp VARCHAR(40) DEFAULT '', instagram TEXT DEFAULT '', telegram TEXT DEFAULT '', address TEXT DEFAULT '', website TEXT DEFAULT '', description TEXT DEFAULT '', accent_color VARCHAR(20) DEFAULT '#c7ff5e', is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+CREATE TABLE IF NOT EXISTS clients (
+  id BIGSERIAL PRIMARY KEY,
+  slug VARCHAR(80) UNIQUE NOT NULL,
+  business_name VARCHAR(160) NOT NULL,
+  tagline VARCHAR(240) DEFAULT '',
+  logo_url TEXT DEFAULT '',
+  phone VARCHAR(40) DEFAULT '',
+  phone_numbers JSONB NOT NULL DEFAULT '[]'::jsonb,
+  whatsapp VARCHAR(40) DEFAULT '',
+  instagram TEXT DEFAULT '',
+  telegram TEXT DEFAULT '',
+  address TEXT DEFAULT '',
+  website TEXT DEFAULT '',
+  description TEXT DEFAULT '',
+  accent_color VARCHAR(20) DEFAULT '#8d5368',
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  white_label BOOLEAN NOT NULL DEFAULT FALSE
+);
 CREATE INDEX IF NOT EXISTS clients_slug_active_idx ON clients(slug, is_active);
-
 ALTER TABLE clients ADD COLUMN IF NOT EXISTS white_label BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS phone_numbers JSONB NOT NULL DEFAULT '[]'::jsonb;
