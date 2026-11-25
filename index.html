@@ -3,41 +3,353 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101114">
-  <title>SMART TAP — Your Business. One Tap.</title>
-  <meta name="description" content="SMART TAP — цифровая визитка вашего бизнеса по одному касанию или QR-коду.">
+  <meta name="theme-color" content="#0b0d0c">
+  <title>SMART TAP — Ваш бизнес. В одном касании.</title>
+  <meta name="description" content="SMART TAP — премиальная цифровая визитка бизнеса по NFC и QR. Все контакты, соцсети, телефоны и филиалы на одной персональной странице.">
+  <meta property="og:title" content="SMART TAP — Ваш бизнес. В одном касании.">
+  <meta property="og:description" content="Одна цифровая страница для всех контактов вашего бизнеса. NFC, QR, филиалы и фирменный дизайн.">
+  <meta property="og:type" content="website">
   <style>
-    :root{color-scheme:dark;--bg:#101114;--panel:#191b21;--muted:#a5a7b0;--text:#f7f7f8;--accent:#c7ff5e;--line:#2b2e37}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% 0%,#28351d 0,transparent 36%),var(--bg);color:var(--text);font:16px/1.5 Inter,Arial,sans-serif}
-    a{color:inherit;text-decoration:none}.wrap{max-width:1120px;margin:auto;padding:26px 24px}
-    header{display:flex;align-items:center;justify-content:space-between}.brand{font-size:22px;font-weight:850;letter-spacing:2px}.brand span{color:var(--accent)}
-    .tag{color:var(--muted);font-size:13px}.hero{padding:105px 0 76px;max-width:760px}.eyebrow{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
-    h1{font-size:clamp(48px,8vw,88px);line-height:.98;letter-spacing:-4px;margin:22px 0}h1 em{font-style:normal;color:var(--accent)}
-    .lead{font-size:19px;color:var(--muted);max-width:570px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
-    .btn{display:inline-flex;padding:14px 21px;border-radius:12px;font-weight:750;background:var(--accent);color:#151812}.btn.secondary{background:transparent;border:1px solid var(--line);color:var(--text)}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0 90px}.card{background:linear-gradient(145deg,#1c1f25,#15171c);border:1px solid var(--line);border-radius:18px;padding:23px;min-height:165px}
-    .num{color:var(--accent);font-size:13px;font-weight:800}.card h3{margin:12px 0 6px}.card p{margin:0;color:var(--muted);font-size:14px}
-    footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    @media(max-width:700px){.hero{padding:80px 0 55px}h1{letter-spacing:-2px}.grid{grid-template-columns:1fr}.card{min-height:auto}}
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+    :root{
+      color-scheme:dark;--bg:#0b0d0c;--panel:#121614;--panel2:#171d19;--line:#29332d;
+      --text:#f5f7f4;--muted:#9da9a0;--muted2:#738078;--lime:#c6ff65;--lime2:#a9ec46;
+      --green:#1d3022;--max:1180px;--radius:24px
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:90px}
+    body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 'DM Sans',Arial,sans-serif;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .container{width:min(var(--max),calc(100% - 48px));margin-inline:auto}
+    .section{padding:112px 0}
+    .section-kicker{display:inline-flex;align-items:center;gap:10px;color:var(--lime);font-size:11px;font-weight:800;letter-spacing:2.6px;text-transform:uppercase}
+    .section-kicker:before{content:"";width:24px;height:1px;background:var(--lime)}
+    .section-title{font:800 clamp(34px,5vw,58px)/1.08 Manrope,Arial,sans-serif;letter-spacing:-2.5px;margin:18px 0 14px}
+    .section-copy{max-width:630px;color:var(--muted);font-size:16px;line-height:1.8;margin:0}
+    .accent{color:var(--lime)}
+    .site-header{position:sticky;top:0;z-index:20;background:#0b0d0ce8;border-bottom:1px solid #ffffff0d;backdrop-filter:blur(18px)}
+    .nav{height:78px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{display:inline-flex;align-items:center;font:800 21px/1 Manrope,sans-serif;letter-spacing:2.1px;white-space:nowrap}
+    .brand span:last-child{color:var(--lime)}
+    .nav-links{display:flex;align-items:center;gap:30px;color:#b7c0b9;font-size:13px;font-weight:600}
+    .nav-links a{transition:color .2s}.nav-links a:hover{color:var(--lime)}
+    .nav-actions{display:flex;align-items:center;gap:10px}
+    .nav-admin{font-size:12px;color:#aeb8b0;padding:10px 13px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:1px solid transparent;border-radius:13px;padding:14px 20px;background:var(--lime);color:#12170e;font-size:13px;font-weight:800;box-shadow:0 8px 28px #c6ff6518;transition:transform .2s,box-shadow .2s,background .2s}
+    .btn:hover{transform:translateY(-2px);background:#d4ff8b;box-shadow:0 12px 34px #c6ff6530}
+    .btn-outline{background:transparent;border-color:#39433c;color:var(--text);box-shadow:none}
+    .btn-outline:hover{background:#ffffff09;border-color:#657268;box-shadow:none}
+    .btn-small{padding:11px 15px;font-size:12px}
+    .arrow{font-size:17px;line-height:1}
+    .hero{position:relative;padding:88px 0 90px;isolation:isolate}
+    .hero:before{content:"";position:absolute;z-index:-1;width:760px;height:650px;right:-230px;top:-130px;background:radial-gradient(ellipse,#8bc63e1b 0,transparent 67%);pointer-events:none}
+    .hero-grid{display:grid;grid-template-columns:1.03fr .97fr;align-items:center;gap:54px}
+    .hero-copy{max-width:590px}
+    .hero .section-kicker{margin-bottom:17px}
+    h1{font:800 clamp(52px,7.2vw,88px)/.99 Manrope,Arial,sans-serif;letter-spacing:-5px;margin:0 0 25px}
+    h1 .line2{display:block;color:var(--lime)}
+    .hero-lead{max-width:540px;color:#aab5ad;font-size:18px;line-height:1.75;margin:0}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+    .hero-points{display:flex;gap:20px;flex-wrap:wrap;margin-top:32px;color:#89968d;font-size:11px}
+    .hero-points span{display:flex;align-items:center;gap:8px}
+    .check{width:17px;height:17px;border-radius:50%;display:inline-grid;place-items:center;color:var(--lime);border:1px solid #9fdb6c55;font-size:10px}
+    .visual-stage{min-height:500px;position:relative;display:grid;place-items:center}
+    .visual-glow{position:absolute;width:420px;height:420px;border-radius:50%;background:#a5ee4720;filter:blur(70px)}
+    .orbit{position:absolute;width:440px;height:440px;border:1px solid #c6ff6517;border-radius:50%}
+    .orbit:before,.orbit:after{content:"";position:absolute;border:1px solid #c6ff6512;border-radius:50%;inset:26px}
+    .orbit:after{inset:60px}
+    .device{position:relative;z-index:2;width:min(100%,390px);border-radius:29px;padding:14px;background:linear-gradient(145deg,#313c34,#141a16 42%,#263329);border:1px solid #a8c58f40;box-shadow:0 35px 100px #0009,0 0 55px #a8e94815;transform:rotate(-3deg)}
+    .device-top{height:23px;display:flex;align-items:center;justify-content:center}
+    .device-camera{width:48px;height:5px;border-radius:9px;background:#080b09}
+    .profile-card{background:linear-gradient(155deg,#f7f8f0,#e7ebdf);color:#182019;border-radius:19px;overflow:hidden;padding:24px 22px 21px;min-height:424px}
+    .profile-top{display:flex;justify-content:space-between;align-items:center;color:#647060;font-size:9px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase}
+    .profile-logo{width:70px;height:70px;border-radius:21px;background:linear-gradient(145deg,#263e2c,#9fca61);display:grid;place-items:center;color:white;font:800 27px Manrope;margin:25px 0 17px;box-shadow:0 10px 23px #37562d33}
+    .profile-card h3{font:800 27px/1.08 Manrope;margin:0 0 7px;letter-spacing:-.9px}
+    .profile-card .subtitle{font-size:11px;color:#647060;margin:0 0 19px}
+    .profile-link{display:flex;align-items:center;gap:11px;border:1px solid #d5ddce;background:#ffffffa8;border-radius:11px;padding:11px 12px;margin-top:8px;font-size:11px;font-weight:800}
+    .profile-link.primary{background:#263b2b;color:white;border-color:#263b2b}
+    .profile-icon{width:25px;height:25px;border-radius:8px;background:#e6eddf;display:grid;place-items:center;color:#344d35;font-size:12px}
+    .profile-link.primary .profile-icon{background:#ffffff20;color:white}
+    .profile-foot{margin-top:18px;text-align:center;color:#909a8b;font-size:8px;letter-spacing:1.8px}
+    .floating{position:absolute;z-index:3;background:#172019;border:1px solid #4c6644;border-radius:14px;padding:12px 15px;box-shadow:0 17px 45px #0008}
+    .floating strong{display:block;color:#f5f8f1;font-size:12px}.floating small{display:block;color:#93a18f;font-size:10px;margin-top:2px}
+    .float-qr{right:-7px;top:82px;transform:rotate(5deg)}
+    .qr-mini{display:grid;grid-template-columns:repeat(5,5px);gap:2px;margin-bottom:7px}
+    .qr-mini i{width:5px;height:5px;background:#d4ff8b;border-radius:1px}
+    .float-nfc{left:-18px;bottom:68px;display:flex;align-items:center;gap:10px;transform:rotate(-5deg)}
+    .nfc-icon{width:30px;height:30px;border-radius:10px;background:#c6ff6518;color:var(--lime);display:grid;place-items:center;font-size:19px}
+    .trust-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#101411}
+    .trust-inner{min-height:90px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .trust-label{font-size:11px;color:#748078;letter-spacing:1.3px;text-transform:uppercase}
+    .trust-item{display:flex;align-items:center;gap:9px;color:#c1cbc3;font-size:12px;font-weight:700}
+    .trust-dot{width:6px;height:6px;background:var(--lime);border-radius:50%;box-shadow:0 0 0 5px #c6ff6514}
+    .how{background:linear-gradient(180deg,#0b0d0c,#0e120f)}
+    .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:44px}
+    .step{position:relative;background:linear-gradient(145deg,#171e19,#111613);border:1px solid #29362d;border-radius:20px;padding:28px;min-height:218px;overflow:hidden}
+    .step:after{content:"";position:absolute;width:130px;height:130px;border-radius:50%;right:-55px;bottom:-65px;background:#c6ff650b}
+    .step-num{font:800 12px Manrope;color:var(--lime);letter-spacing:1.5px}
+    .step-icon{width:46px;height:46px;border-radius:14px;background:#c6ff6514;border:1px solid #c6ff6520;display:grid;place-items:center;color:var(--lime);font-size:21px;margin:23px 0 14px}
+    .step h3{font:800 18px Manrope;margin:0 0 7px}
+    .step p{color:var(--muted);font-size:13px;line-height:1.7;margin:0;max-width:280px}
+    .benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:42px}
+    .benefit{padding:25px 24px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(145deg,#151a17,#101311);min-height:205px}
+    .benefit-icon{font-size:20px;color:var(--lime);margin-bottom:18px}
+    .benefit h3{font:800 16px Manrope;margin:0 0 8px}
+    .benefit p{margin:0;color:var(--muted);font-size:13px;line-height:1.75}
+    .showcase{background:#101512;border-block:1px solid #202b23}
+    .showcase-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:center}
+    .showcase-copy{max-width:440px}
+    .showcase-points{display:grid;gap:17px;margin-top:28px}
+    .showcase-point{display:flex;gap:12px;align-items:flex-start}
+    .showcase-point .check{flex:0 0 17px;margin-top:2px}
+    .showcase-point strong{display:block;font-size:13px;margin-bottom:2px}
+    .showcase-point small{color:var(--muted);font-size:12px;line-height:1.6}
+    .dashboard{border:1px solid #364238;border-radius:23px;background:#151b17;padding:18px;box-shadow:0 30px 70px #0005}
+    .dash-head{display:flex;justify-content:space-between;align-items:center;padding:3px 2px 17px;border-bottom:1px solid #303a33}
+    .dash-brand{font:800 12px Manrope;letter-spacing:1.4px}.dash-brand span{color:var(--lime)}
+    .dash-live{color:var(--lime);font-size:10px}
+    .dash-body{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:17px}
+    .dash-main,.dash-side{border:1px solid #303a33;border-radius:15px;background:#101512;padding:17px}
+    .dash-label{color:#7f8c82;font-size:9px;letter-spacing:1.3px;text-transform:uppercase}
+    .dash-main h3{font:800 24px Manrope;margin:9px 0 5px}.dash-main p{color:#8f9c92;font-size:11px;margin:0}
+    .dash-url{margin-top:22px;background:#1c281f;color:#c6ff65;border-radius:9px;padding:10px;font-size:10px}
+    .branch-preview{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #29332d;font-size:10px;color:#c6cec8}
+    .branch-preview:last-child{border:0}.branch-preview span:last-child{color:#a2b39f}
+    .dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .dash-stat{padding:12px;border-radius:12px;background:#1a211c;border:1px solid #303a33}
+    .dash-stat strong{display:block;color:var(--lime);font:800 17px Manrope}.dash-stat small{display:block;color:#829087;font-size:9px;margin-top:2px}
+    .audience-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:40px}
+    .audience{border:1px solid var(--line);background:#141915;border-radius:16px;padding:20px}
+    .audience span{display:block;font-size:21px;margin-bottom:12px}.audience strong{font-size:13px}
+    .plans{background:linear-gradient(180deg,#0d110e,#111612)}
+    .plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:42px}
+    .plan{border:1px solid #303a33;border-radius:22px;padding:28px;background:#151b17;display:flex;flex-direction:column;min-height:360px}
+    .plan.featured{border-color:#9fdb56;background:linear-gradient(155deg,#1d2a1d,#151b17);box-shadow:0 18px 55px #8dbf3214}
+    .plan-tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);font-weight:800}
+    .plan h3{font:800 25px Manrope;margin:12px 0 8px}
+    .plan p{color:var(--muted);font-size:13px;line-height:1.7;margin:0 0 21px}
+    .plan ul{padding:0;margin:0 0 25px;list-style:none;display:grid;gap:11px}
+    .plan li{font-size:12px;color:#c4cec6;display:flex;gap:9px}.plan li:before{content:"✓";color:var(--lime);font-weight:800}
+    .plan .btn{margin-top:auto;width:100%}
+    .faq-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:65px;align-items:start}
+    .faq-list{display:grid;gap:10px}
+    details{border:1px solid var(--line);border-radius:15px;background:#131815;padding:0 18px}
+    summary{cursor:pointer;list-style:none;padding:18px 25px 18px 0;font-size:13px;font-weight:700;position:relative}
+    summary::-webkit-details-marker{display:none}
+    summary:after{content:"+";position:absolute;right:0;top:14px;color:var(--lime);font-size:21px;font-weight:400}
+    details[open] summary:after{content:"−"}
+    details p{margin:0;padding:0 0 18px;color:var(--muted);font-size:12px;line-height:1.8}
+    .final-cta{padding:0 0 105px}
+    .cta-card{position:relative;overflow:hidden;border:1px solid #526d42;border-radius:27px;padding:54px 56px;background:radial-gradient(ellipse at 90% 10%,#c6ff6524,transparent 42%),linear-gradient(115deg,#1c2a1e,#111714 66%);display:flex;align-items:center;justify-content:space-between;gap:30px}
+    .cta-card:after{content:"ST";position:absolute;right:25%;top:-100px;font:800 250px Manrope;color:#ffffff05;pointer-events:none}
+    .cta-copy{position:relative;z-index:1;max-width:620px}
+    .cta-copy h2{font:800 clamp(30px,4vw,48px)/1.1 Manrope;letter-spacing:-2px;margin:12px 0}
+    .cta-copy p{color:#aab8ac;font-size:14px;margin:0}
+    .cta-action{position:relative;z-index:1;flex:0 0 auto}
+    footer{border-top:1px solid #27312b;padding:28px 0 38px;color:#7f8c83;font-size:11px}
+    .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    .footer-links{display:flex;gap:20px;flex-wrap:wrap}.footer-links a:hover{color:var(--lime)}
+    @media(max-width:980px){
+      .nav-links{gap:16px}.hero-grid{gap:24px}.showcase-grid{gap:35px}.audience-grid{grid-template-columns:repeat(2,1fr)}
+      h1{font-size:clamp(48px,7vw,72px)}
+    }
+    @media(max-width:740px){
+      .container{width:min(100% - 32px,var(--max))}.section{padding:78px 0}
+      .nav{height:auto;min-height:70px;flex-wrap:wrap;padding:16px 0}.nav-links{order:3;width:100%;overflow:auto;padding:3px 0 5px;gap:22px;white-space:nowrap;font-size:12px}
+      .nav-actions{margin-left:auto}.nav-admin{display:none}
+      .hero{padding:66px 0 55px}.hero-grid,.showcase-grid,.faq-grid{grid-template-columns:1fr}
+      .hero-grid{gap:20px}.hero-copy{max-width:100%}h1{font-size:clamp(48px,13vw,70px);letter-spacing:-3.5px}
+      .hero-lead{font-size:16px}.visual-stage{min-height:440px;margin-top:5px}.device{width:min(88%,360px)}
+      .orbit{width:350px;height:350px}.float-qr{right:0;top:46px}.float-nfc{left:0;bottom:42px}
+      .trust-inner{padding:22px 0;justify-content:flex-start}.trust-label{width:100%}
+      .how-grid,.benefits-grid,.plans-grid{grid-template-columns:1fr}.step{min-height:0}.benefit{min-height:0}
+      .showcase-grid{gap:34px}.dashboard{padding:13px}.dash-body{grid-template-columns:1fr}.dash-stats{grid-template-columns:repeat(3,1fr)}
+      .audience-grid{grid-template-columns:repeat(2,1fr)}.faq-grid{gap:28px}
+      .cta-card{padding:34px 25px;display:block}.cta-action{margin-top:25px}.cta-action .btn{width:100%}
+      .final-cta{padding-bottom:75px}
+    }
+    @media(max-width:390px){.container{width:calc(100% - 26px)}.brand{font-size:18px}.nav-actions .btn{padding:10px 12px}.visual-stage{min-height:400px}.float-qr{right:-4px}.float-nfc{left:-3px}.profile-card{padding:20px 17px}.audience{padding:16px}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header><a class="brand" href="#">SMART<span>TAP</span></a><div class="tag">YOUR BUSINESS. ONE TAP.</div></header>
-    <main>
-      <section class="hero">
-        <div class="eyebrow">A smarter way to connect</div>
-        <h1>Один тап.<br><em>Все контакты.</em></h1>
-        <p class="lead">Цифровая визитка вашего бизнеса, которая открывается по NFC или QR-коду. Контакты, соцсети, адрес и каталог — в одной удобной странице.</p>
-        <div class="actions"><a class="btn" href="mailto:hello@smarttap.uz">Подключить бизнес</a><a class="btn secondary" href="#how">Как это работает</a></div>
-      </section>
-      <section class="grid" id="how">
-        <article class="card"><div class="num">01 / TAP</div><h3>Коснитесь</h3><p>Клиент прикладывает телефон к NFC-карте или подставке.</p></article>
-        <article class="card"><div class="num">02 / OPEN</div><h3>Откройте страницу</h3><p>Или просто отсканируйте QR-код — установка приложения не нужна.</p></article>
-        <article class="card"><div class="num">03 / CONNECT</div><h3>Оставайтесь на связи</h3><p>Все важные ссылки и информация о бизнесе собраны в одном месте.</p></article>
-      </section>
-    </main>
-    <footer><span>© 2026 SMART TAP</span><span>Your Business. One Tap.</span></footer>
-  </div>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#" aria-label="SMART TAP — главная"><span>SMART</span><span>TAP</span></a>
+      <nav class="nav-links" aria-label="Главная навигация">
+        <a href="#how">Как работает</a>
+        <a href="#features">Возможности</a>
+        <a href="#business">Для бизнеса</a>
+        <a href="#plans">Решения</a>
+        <a href="#faq">Вопросы</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="nav-admin" href="/admin">Админ-панель</a>
+        <a class="btn btn-small" href="mailto:hello@smarttap.uz?subject=Подключение%20SMART%20TAP">Подключить бизнес <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="section-kicker">NFC · QR · DIGITAL BUSINESS CARD</div>
+          <h1>Ваш бизнес.<br><span class="line2">В одном касании.</span></h1>
+          <p class="hero-lead">Не заставляйте клиентов искать ваш номер, адрес или Instagram. Соберите всё важное о компании на одной красивой цифровой странице.</p>
+          <div class="hero-actions">
+            <a class="btn" href="mailto:hello@smarttap.uz?subject=Хочу%20подключить%20SMART%20TAP">Создать страницу <span class="arrow">↗</span></a>
+            <a class="btn btn-outline" href="#demo">Посмотреть пример <span class="arrow">↓</span></a>
+          </div>
+          <div class="hero-points">
+            <span><i class="check">✓</i> Без приложения</span>
+            <span><i class="check">✓</i> NFC и QR-код</span>
+            <span><i class="check">✓</i> Ваш стиль и логотип</span>
+          </div>
+        </div>
+
+        <div class="visual-stage" id="demo" aria-label="Пример цифровой визитки SMART TAP">
+          <div class="visual-glow"></div><div class="orbit"></div>
+          <div class="device">
+            <div class="device-top"><div class="device-camera"></div></div>
+            <div class="profile-card">
+              <div class="profile-top"><span>Digital profile</span><span>ST / 001</span></div>
+              <div class="profile-logo">N</div>
+              <h3>North Studio</h3>
+              <p class="subtitle">Ваш бренд. Ваш стиль. Все контакты.</p>
+              <div class="profile-link primary"><span class="profile-icon">☎</span><span>Позвонить</span><span style="margin-left:auto">↗</span></div>
+              <div class="profile-link"><span class="profile-icon">◎</span><span>Instagram</span><span style="margin-left:auto">↗</span></div>
+              <div class="profile-link"><span class="profile-icon">➤</span><span>Написать в Telegram</span><span style="margin-left:auto">↗</span></div>
+              <div class="profile-link"><span class="profile-icon">⌖</span><span>Как добраться</span><span style="margin-left:auto">↗</span></div>
+              <div class="profile-foot">POWERED BY SMART TAP</div>
+            </div>
+          </div>
+          <div class="floating float-qr"><div class="qr-mini"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><strong>QR готов</strong><small>Откройте камерой</small></div>
+          <div class="floating float-nfc"><div class="nfc-icon">)))</div><div><strong>Одно касание</strong><small>NFC-карта или подставка</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-strip">
+      <div class="container trust-inner">
+        <div class="trust-label">Всё, что нужно клиенту — в одном месте</div>
+        <div class="trust-item"><i class="trust-dot"></i>Контакты</div>
+        <div class="trust-item"><i class="trust-dot"></i>Социальные сети</div>
+        <div class="trust-item"><i class="trust-dot"></i>Филиалы и карты</div>
+        <div class="trust-item"><i class="trust-dot"></i>Сайт и мессенджеры</div>
+      </div>
+    </section>
+
+    <section class="section how" id="how">
+      <div class="container">
+        <div class="section-kicker">Просто для вас. Удобно клиенту.</div>
+        <h2 class="section-title">Три шага — и вы <span class="accent">на связи.</span></h2>
+        <p class="section-copy">Клиенту не нужно устанавливать приложение, запоминать номер или искать нужную страницу в социальных сетях.</p>
+        <div class="how-grid">
+          <article class="step"><div class="step-num">01 / TAP</div><div class="step-icon">)))</div><h3>Коснитесь</h3><p>Клиент прикладывает смартфон к вашей NFC-карте или подставке.</p></article>
+          <article class="step"><div class="step-num">02 / OPEN</div><div class="step-icon">▦</div><h3>Откройте страницу</h3><p>Можно также отсканировать QR-код камерой телефона — без установки приложения.</p></article>
+          <article class="step"><div class="step-num">03 / CONNECT</div><div class="step-icon">↗</div><h3>Выберите действие</h3><p>Позвонить, написать, открыть Instagram, сайт или маршрут до филиала — одним нажатием.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-kicker">Больше, чем электронная визитка</div>
+        <h2 class="section-title">Всё необходимое.<br><span class="accent">Ничего лишнего.</span></h2>
+        <p class="section-copy">Страница выглядит как продолжение вашего бренда и помогает клиенту сразу сделать следующий шаг.</p>
+        <div class="benefits-grid">
+          <article class="benefit"><div class="benefit-icon">✳</div><h3>Фирменный дизайн</h3><p>Ваш логотип, акцентные цвета и аккуратная подача — страница в стиле вашего бизнеса.</p></article>
+          <article class="benefit"><div class="benefit-icon">⌁</div><h3>Все способы связи</h3><p>Телефоны, WhatsApp, Telegram, Instagram, сайт и другие важные ссылки в одном месте.</p></article>
+          <article class="benefit"><div class="benefit-icon">⌖</div><h3>Несколько филиалов</h3><p>Добавьте адреса, график, карту и телефон каждой точки — клиент выберет нужную.</p></article>
+          <article class="benefit"><div class="benefit-icon">▦</div><h3>QR-код для бренда</h3><p>Отдельный QR ведёт на вашу страницу. Его можно разместить на упаковке, витрине или визитке.</p></article>
+          <article class="benefit"><div class="benefit-icon">)))</div><h3>NFC в одно касание</h3><p>Используйте NFC-карту или подставку: касание открывает ту же цифровую страницу.</p></article>
+          <article class="benefit"><div class="benefit-icon">◈</div><h3>Один адрес навсегда</h3><p>Ссылка остаётся прежней, даже когда вы обновляете контакты и информацию о компании.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section showcase" id="business">
+      <div class="container showcase-grid">
+        <div class="showcase-copy">
+          <div class="section-kicker">Управление без сложностей</div>
+          <h2 class="section-title">Ваша компания —<br><span class="accent">под контролем.</span></h2>
+          <p class="section-copy">Создавайте страницу бренда в SMART TAP и управляйте её содержимым из одной панели.</p>
+          <div class="showcase-points">
+            <div class="showcase-point"><i class="check">✓</i><div><strong>Добавьте бренд</strong><small>Название, логотип, телефоны, соцсети и описание.</small></div></div>
+            <div class="showcase-point"><i class="check">✓</i><div><strong>Укажите филиалы</strong><small>Адреса, график работы, телефоны и ссылки на карты.</small></div></div>
+            <div class="showcase-point"><i class="check">✓</i><div><strong>Поделитесь ссылкой</strong><small>Используйте одну страницу в QR-коде и NFC.</small></div></div>
+          </div>
+          <div class="hero-actions"><a class="btn btn-outline" href="/admin">Открыть админ-панель <span class="arrow">↗</span></a></div>
+        </div>
+        <div class="dashboard" aria-label="Декоративный пример панели SMART TAP">
+          <div class="dash-head"><div class="dash-brand">SMART<span>TAP</span> / ADMIN</div><div class="dash-live">● Панель управления</div></div>
+          <div class="dash-body">
+            <div class="dash-main"><div class="dash-label">Страница бренда</div><h3>North Studio</h3><p>Цифровая визитка бизнеса</p><div class="dash-url">smarttap.uz/t/north-studio ↗</div></div>
+            <div class="dash-side"><div class="dash-label">Филиалы</div><div class="branch-preview"><span>Главный офис</span><span>● Активен</span></div><div class="branch-preview"><span>Филиал №2</span><span>● Активен</span></div><div class="branch-preview"><span>Филиал №3</span><span>● Активен</span></div></div>
+          </div>
+          <div class="dash-stats"><div class="dash-stat"><strong>01</strong><small>Страница бренда</small></div><div class="dash-stat"><strong>QR</strong><small>Код для печати</small></div><div class="dash-stat"><strong>NFC</strong><small>Одно касание</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-kicker">Для разных направлений</div>
+        <h2 class="section-title">Подходит вашему <span class="accent">формату.</span></h2>
+        <p class="section-copy">Одна понятная точка контакта для компаний, которым важно оставаться на связи с клиентами.</p>
+        <div class="audience-grid">
+          <div class="audience"><span>✦</span><strong>Магазины и бренды</strong></div>
+          <div class="audience"><span>✧</span><strong>Салоны и студии</strong></div>
+          <div class="audience"><span>⌂</span><strong>Кафе и рестораны</strong></div>
+          <div class="audience"><span>◈</span><strong>Сервисы и компании</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section plans" id="plans">
+      <div class="container">
+        <div class="section-kicker">Выберите формат</div>
+        <h2 class="section-title">Решение под ваш <span class="accent">бизнес.</span></h2>
+        <p class="section-copy">Подберём конфигурацию по количеству филиалов, каналам связи и требованиям к оформлению.</p>
+        <div class="plans-grid">
+          <article class="plan"><div class="plan-tag">01 / Start</div><h3>Старт</h3><p>Для одного бренда, которому нужна аккуратная цифровая визитка.</p><ul><li>Персональная страница</li><li>Логотип и фирменный цвет</li><li>Телефоны и социальные сети</li><li>QR-код страницы</li></ul><a class="btn btn-outline" href="mailto:hello@smarttap.uz?subject=SMART%20TAP%20—%20Старт">Обсудить вариант</a></article>
+          <article class="plan featured"><div class="plan-tag">02 / Business</div><h3>Бизнес</h3><p>Для компаний с несколькими точками и разными каналами связи.</p><ul><li>Всё из «Старта»</li><li>Несколько филиалов</li><li>Адреса, график и карты</li><li>Несколько номеров телефонов</li></ul><a class="btn" href="mailto:hello@smarttap.uz?subject=SMART%20TAP%20—%20Бизнес">Подобрать решение <span class="arrow">↗</span></a></article>
+          <article class="plan"><div class="plan-tag">03 / White Label</div><h3>White Label</h3><p>Для брендов, которым нужна страница без фирменной отметки SMART TAP.</p><ul><li>Отдельное оформление</li><li>Скрытие брендинга SMART TAP</li><li>Фирменная цветовая палитра</li><li>Страница в стиле вашего бренда</li></ul><a class="btn btn-outline" href="mailto:hello@smarttap.uz?subject=SMART%20TAP%20—%20White%20Label">Обсудить White Label</a></article>
+        </div>
+        <p style="color:#738078;font-size:11px;margin:18px 0 0">Стоимость зависит от выбранного формата и количества филиалов. Уточняйте условия при обращении.</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container faq-grid">
+        <div><div class="section-kicker">FAQ</div><h2 class="section-title">Частые <span class="accent">вопросы.</span></h2><p class="section-copy">Коротко о том, как работает цифровая визитка SMART TAP.</p></div>
+        <div class="faq-list">
+          <details><summary>Нужно ли клиенту устанавливать приложение?</summary><p>Нет. Страница открывается в обычном браузере телефона. Для перехода можно использовать NFC или QR-код.</p></details>
+          <details><summary>Что делать, если на телефоне нет NFC?</summary><p>Можно отсканировать QR-код камерой. Он ведёт на тот же адрес цифровой страницы.</p></details>
+          <details><summary>Можно ли добавить несколько филиалов?</summary><p>Да. Для каждого филиала можно указать название, адрес, ссылку на карту, часы работы и отдельный телефон.</p></details>
+          <details><summary>Можно ли изменить данные после создания страницы?</summary><p>Да. Данные бренда редактируются в панели SMART TAP. Адрес страницы при этом остаётся прежним.</p></details>
+          <details><summary>Можно ли убрать логотип SMART TAP со страницы?</summary><p>Для этого предусмотрен формат White Label — он позволяет скрыть брендинг SMART TAP.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="container">
+        <div class="cta-card">
+          <div class="cta-copy"><div class="section-kicker">Готовы к одному касанию?</div><h2>Пусть клиенту будет<br><span class="accent">легко вас найти.</span></h2><p>Соберём контакты и филиалы вашего бизнеса в одной цифровой визитке.</p></div>
+          <div class="cta-action"><a class="btn" href="mailto:hello@smarttap.uz?subject=Подключение%20SMART%20TAP">Подключить SMART TAP <span class="arrow">↗</span></a></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <a class="brand" href="#"><span>SMART</span><span>TAP</span></a>
+      <div>© 2026 SMART TAP · Your Business. One Tap.</div>
+      <div class="footer-links"><a href="#features">Возможности</a><a href="#plans">Решения</a><a href="/admin">Админ-панель</a><a href="mailto:hello@smarttap.uz">Связаться</a></div>
+    </div>
+  </footer>
 </body>
 </html>
