@@ -128,7 +128,7 @@ function createAdminToken() {
 function validAdminToken(req) {
   if (!ADMIN_KEY) return false;
   const cookieHeader = req.headers.cookie || '';
-  const match = cookieHeader.match(/(?:^|;\\s*)smarttap_admin_session=([^;]*)/);
+  const match = cookieHeader.match(/(?:^|;\s*)smarttap_admin_session=([^;]*)/);
   let token = '';
   try { token = match ? decodeURIComponent(match[1]) : ''; } catch (_) { return false; }
   const [payload, signature] = token.split('.');
