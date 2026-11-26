@@ -82,7 +82,7 @@ async function listClients() {
 async function saveClient(data, slug) {
   const phones = normalizePhones(data);
   const branches = normalizeBranches(data);
-  const fields = ['business_name', 'tagline', 'logo_url', 'phone', 'whatsapp',
+  const fields = ['business_name', 'business_type', 'tagline', 'logo_url', 'phone', 'whatsapp',
     'instagram', 'telegram', 'address', 'website', 'description', 'accent_color'];
   const values = fields.map(field => {
     if (field === 'phone') return phones[0] || String(data.phone || '').trim();
@@ -424,6 +424,7 @@ app.get('/t/:slug', async (req, res) => {
     const phones = Array.isArray(client.phone_numbers) && client.phone_numbers.length
       ? client.phone_numbers : (client.phone ? [client.phone] : []);
     const accent = /^#[0-9a-f]{6}$/i.test(String(client.accent_color || '')) ? client.accent_color : '#8d5368';
+    const businessType = ['florist','confectionery','jewelry','cafe','retail','services'].includes(client.business_type) ? client.business_type : 'services';
     const logo = safeLogo(client.logo_url);
     const title = escapeHtml(client.business_name);
     const tagline = escapeHtml(client.tagline || '');
@@ -528,6 +529,7 @@ app.get('/', (req, res) => {
     try {
       await pool.query(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
       await pool.query('ALTER TABLE clients ADD COLUMN IF NOT EXISTS white_label BOOLEAN NOT NULL DEFAULT FALSE');
+      await pool.query("ALTER TABLE clients ADD COLUMN IF NOT EXISTS business_type VARCHAR(40) NOT NULL DEFAULT 'services'");
       await pool.query("ALTER TABLE clients ADD COLUMN IF NOT EXISTS phone_numbers JSONB NOT NULL DEFAULT '[]'::jsonb");
       await pool.query("ALTER TABLE clients ADD COLUMN IF NOT EXISTS branches JSONB NOT NULL DEFAULT '[]'::jsonb");
       console.log('Database schema ready');
