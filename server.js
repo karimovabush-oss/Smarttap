@@ -514,7 +514,14 @@ app.get('/t/:slug', async (req, res) => {
 });
 
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/kinderchi', (req, res) => res.redirect(301, '/kinderchi/'));
+app.get('/kinderchi/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'kinderchi.html')));
+app.get('/', (req, res) => {
+  if (String(req.hostname || '').toLowerCase() === 'kinderchi.smarttap.uz') {
+    return res.sendFile(path.join(__dirname, 'public', 'kinderchi.html'));
+  }
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 (async () => {
   if (pool) {
