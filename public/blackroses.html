@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090909">
+<meta name="description" content="BLACK ROSES — премиальные букеты, авторские цветочные композиции и доставка по Ташкенту 24/7.">
+<meta property="og:title" content="BLACK ROSES — Flowers that speak">
+<meta property="og:description" content="Авторские букеты и премиальные цветочные композиции. Заказ онлайн 24/7.">
+<meta property="og:type" content="website">
+<title>BLACK ROSES — Flowers that speak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080808;--panel:#111;--white:#f7f3ef;--muted:#a9a09c;--red:#9d1424;--red2:#c3263b;--line:#ffffff20;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',Arial,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}body{margin:0;background:var(--bg);color:var(--white);font-family:var(--sans);overflow-x:hidden}a{color:inherit;text-decoration:none}button{font:inherit}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:5;opacity:.055;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E")}
+.wrap{width:min(1180px,calc(100% - 48px));margin:auto}.topbar{position:absolute;z-index:10;top:0;left:0;width:100%;padding:24px 0;border-bottom:1px solid #ffffff1c}.nav{display:flex;align-items:center;justify-content:space-between;gap:18px}.mini-logo{display:flex;align-items:center;gap:12px}.mini-logo svg{width:42px;height:42px}.mini-logo span{font:600 17px var(--serif);letter-spacing:3px}.nav-note{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#d4c9c4}
+.hero{position:relative;min-height:790px;min-height:min(900px,100svh);display:flex;align-items:center;overflow:hidden;isolation:isolate;background:#100b0b}
+.hero-bg{position:absolute;inset:0;z-index:-3;background-image:linear-gradient(90deg,rgba(5,5,5,.88) 0%,rgba(5,5,5,.62) 42%,rgba(5,5,5,.12) 100%),linear-gradient(0deg,#080808 0%,transparent 30%),url('https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=2200&q=90');background-size:cover;background-position:center 45%;transform:scale(1.06);animation:heroZoom 18s ease-in-out infinite alternate}
+.hero-glow{position:absolute;z-index:-2;inset:0;background:radial-gradient(ellipse at 72% 45%,#a5142925,transparent 45%);pointer-events:none}
+.hero-content{padding:150px 0 115px;max-width:690px;position:relative;z-index:2}
+.eyebrow{display:flex;align-items:center;gap:14px;color:#e6b9b9;font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;opacity:0;animation:rise .9s .25s forwards}
+.eyebrow:before{content:"";width:42px;height:1px;background:var(--red2)}
+.hero h1{font:500 clamp(66px,10vw,132px)/.78 var(--serif);letter-spacing:-3px;margin:34px 0 22px;max-width:700px;opacity:0;animation:rise 1.15s .42s forwards}
+.hero h1 span{display:block;color:#d9b7b1;font-style:italic;margin-left:clamp(18px,8vw,110px);margin-top:17px}
+.hero-copy{max-width:420px;color:#e1d9d5;font-size:14px;line-height:1.9;letter-spacing:.25px;margin:35px 0 30px;opacity:0;animation:rise 1s .68s forwards}
+.hero-actions{display:flex;flex-wrap:wrap;gap:13px;opacity:0;animation:rise 1s .88s forwards}
+.btn{min-height:54px;display:inline-flex;align-items:center;justify-content:center;gap:14px;padding:0 25px;border:1px solid #ffffff55;background:transparent;color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:transform .35s,border-color .35s,background .35s,box-shadow .35s;position:relative;overflow:hidden}
+.btn:before{content:"";position:absolute;inset:0;transform:translateX(-110%);background:linear-gradient(100deg,transparent,#ffffff25,transparent);transition:transform .7s}
+.btn:hover:before{transform:translateX(110%)}.btn:hover{transform:translateY(-3px);border-color:#fff;box-shadow:0 12px 35px #0008}
+.btn-primary{background:var(--red);border-color:var(--red);box-shadow:0 12px 35px #9d142444}.btn-primary:hover{background:#b51e31;border-color:#b51e31}
+.btn .arr{font-size:18px;line-height:0}.scroll-cue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;color:#bcb0aa;font-size:9px;letter-spacing:3px;text-transform:uppercase}.scroll-cue:after{content:"";width:1px;height:40px;background:linear-gradient(#ffffff80,transparent);position:absolute;top:22px;left:50%;animation:scrollLine 1.8s ease-in-out infinite}
+.hero-mark{position:absolute;right:8%;bottom:12%;width:clamp(160px,22vw,290px);opacity:.24;filter:drop-shadow(0 0 35px #d12b3a);animation:markFloat 7s ease-in-out infinite;z-index:-1}
+.petal{position:absolute;top:-10vh;width:12px;height:20px;border-radius:90% 0 90% 0;background:linear-gradient(145deg,#d85b67,#64101d);opacity:.65;pointer-events:none;z-index:1;animation:fall linear infinite}
+.section{padding:120px 0;position:relative}.section-kicker{font-size:10px;letter-spacing:4px;color:#cf7b82;text-transform:uppercase}.section-title{font:500 clamp(42px,6vw,76px)/.95 var(--serif);margin:22px 0 20px;letter-spacing:-1px}.section-title em{color:#bd5964;font-weight:400}.section-copy{max-width:520px;color:var(--muted);font-size:13px;line-height:2}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:90px}.story-photo{position:relative;min-height:560px;overflow:hidden}.story-photo img{position:absolute;width:100%;height:100%;object-fit:cover;inset:0;filter:saturate(.82);transition:transform 1.2s}.story-photo:hover img{transform:scale(1.055)}.story-photo:after{content:"";position:absolute;inset:16px;border:1px solid #ffffff55;pointer-events:none}.story-photo:before{content:"";position:absolute;z-index:1;inset:0;background:linear-gradient(0deg,#08080855,transparent 55%);pointer-events:none}
+.story-caption{position:absolute;z-index:2;left:34px;bottom:34px;font:italic 26px var(--serif);color:#fff}
+.story-copy{padding:20px 0}.story-copy .section-copy{margin-bottom:30px}
+.social{background:linear-gradient(180deg,#0b0909,#12090b 50%,#080808);border-top:1px solid #ffffff0d;border-bottom:1px solid #ffffff0d}
+.social-head{text-align:center;max-width:650px;margin:0 auto 55px}.social-head .section-copy{margin:0 auto}
+.social-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.social-card{min-height:190px;border:1px solid #ffffff20;background:linear-gradient(145deg,#171112,#0c0a0a);padding:28px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .4s,border-color .4s,background .4s;position:relative;overflow:hidden}
+.social-card:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-80px;bottom:-85px;background:#a21a2a22;filter:blur(3px);transition:transform .6s}.social-card:hover{transform:translateY(-7px);border-color:#a83a46;background:linear-gradient(145deg,#211214,#100b0c)}.social-card:hover:after{transform:scale(1.7)}
+.social-icon{width:42px;height:42px;border:1px solid #ffffff3b;border-radius:50%;display:grid;place-items:center;color:#d6a2a2}.social-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.social-card small{font-size:9px;letter-spacing:2.4px;text-transform:uppercase;color:#ad8585}.social-card strong{font:500 26px var(--serif);position:relative;z-index:1}.social-card .go{font-size:11px;letter-spacing:1px;color:#d7a0a4;position:relative;z-index:1}
+.contact{padding:110px 0 90px;text-align:center;background:radial-gradient(ellipse at 50% 100%,#75111d30,transparent 55%)}
+.contact-logo{width:104px;height:104px;margin:0 auto 25px;filter:drop-shadow(0 0 25px #a51c2d33);animation:markFloat 6s ease-in-out infinite}
+.contact h2{font:500 clamp(48px,8vw,86px)/.9 var(--serif);margin:0 0 20px}.contact p{color:var(--muted);font-size:13px;letter-spacing:1px;margin:0 0 30px}
+.contact-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.phone{display:block;margin-top:30px;font:500 25px var(--serif);letter-spacing:2px;color:#e4c8c4}
+.footer{border-top:1px solid #ffffff17;padding:25px 0 34px;color:#857c78;font-size:9px;letter-spacing:2px;text-transform:uppercase}.footer-inner{display:flex;justify-content:space-between;gap:15px;align-items:center}.footer b{color:#c5aaa5;font-weight:500}
+.reveal{opacity:0;transform:translateY(35px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}.reveal.visible{opacity:1;transform:translateY(0)}
+.floating-order{display:none}
+@keyframes rise{to{opacity:1;transform:translateY(0)}from{opacity:0;transform:translateY(28px)}}
+@keyframes heroZoom{from{transform:scale(1.06)}to{transform:scale(1.15)}}
+@keyframes markFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-13px) rotate(2deg)}}
+@keyframes fall{0%{transform:translate3d(0,-10vh,0) rotate(0);opacity:0}10%{opacity:.65}90%{opacity:.45}100%{transform:translate3d(90px,115vh,0) rotate(540deg);opacity:0}}
+@keyframes scrollLine{0%,100%{transform:scaleY(.55);transform-origin:top;opacity:.45}50%{transform:scaleY(1);transform-origin:top;opacity:1}}
+@media(max-width:760px){.wrap{width:min(100% - 36px,560px)}.topbar{padding:17px 0}.mini-logo svg{width:34px;height:34px}.mini-logo span{font-size:15px}.nav-note{font-size:8px;letter-spacing:1.4px}.hero{min-height:820px;min-height:94svh}.hero-bg{background-image:linear-gradient(90deg,rgba(5,5,5,.79),rgba(5,5,5,.3)),linear-gradient(0deg,#080808 0%,transparent 55%),url('https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=1200&q=85');background-position:58% center}.hero-content{padding:150px 0 110px}.hero h1{font-size:clamp(64px,18vw,100px);letter-spacing:-2px}.hero-copy{font-size:12px;max-width:330px;margin:28px 0}.hero-actions{display:grid;grid-template-columns:1fr;max-width:310px}.btn{min-height:52px}.hero-mark{right:-20px;bottom:16%;width:180px}.scroll-cue{bottom:28px}.section{padding:82px 0}.story-grid{grid-template-columns:1fr;gap:38px}.story-photo{min-height:440px;order:2}.story-copy{order:1}.social-head{margin-bottom:32px}.social-grid{grid-template-columns:1fr;gap:10px}.social-card{min-height:145px;padding:22px}.social-card strong{font-size:24px}.contact{padding:82px 0 92px}.contact-actions{display:grid;max-width:330px;margin:auto}.phone{font-size:23px}.footer-inner{flex-direction:column;text-align:center}.floating-order{display:flex;position:fixed;z-index:20;bottom:calc(14px + env(safe-area-inset-bottom));left:16px;right:16px;box-shadow:0 10px 35px #000b}.floating-order .btn{width:100%;background:#9d1424;border-color:#c33b4a}.story-photo:after{inset:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap nav">
+<a class="mini-logo" href="#top" aria-label="BLACK ROSES">
+<svg viewBox="0 0 100 100" role="img" aria-label="BLACK ROSES logo"><circle cx="50" cy="50" r="46" fill="none" stroke="#f7f3ef" stroke-width="2.5"/><path d="M48 61 C31 59 25 43 31 23 C44 27 54 37 56 49 C58 56 54 61 48 61Z" fill="#f7f3ef"/><path d="M52 61 C68 56 72 39 67 23 C56 28 49 39 49 49 C48 55 49 59 52 61Z" fill="#f7f3ef"/><path d="M43 25 L49 19 L56 24 L50 29Z" fill="#f7f3ef"/><path d="M50 62 C47 77 54 84 68 82 C77 81 82 75 85 69" fill="none" stroke="#f7f3ef" stroke-width="3" stroke-linecap="round"/><path d="M43 70 C35 66 29 68 24 72 C32 75 38 76 43 70Z M57 70 C65 65 71 67 76 71 C68 75 62 75 57 70Z" fill="#f7f3ef"/></svg>
+<span>BLACK ROSES</span></a><span class="nav-note">Premium flowers · Tashkent</span></div></header>
+<main id="top">
+<section class="hero">
+<div class="hero-bg" data-parallax></div><div class="hero-glow"></div><div id="petals" aria-hidden="true"></div>
+<div class="wrap"><div class="hero-content">
+<div class="eyebrow">Flowers · Emotion · Art</div>
+<h1>BLACK <span>ROSES</span></h1>
+<p class="hero-copy">Цветы, которые говорят без слов. Авторские букеты, нежные композиции и особенные моменты — с доставкой по Ташкенту 24/7.</p>
+<div class="hero-actions">
+<a class="btn btn-primary" href="https://buchet.uz/catalog/shop/6ad9bab2c8595f2271d63020" target="_blank" rel="noopener">Оформить заказ <span class="arr">↗</span></a>
+<a class="btn" href="https://t.me/Blackrosespremium" target="_blank" rel="noopener">Telegram канал <span class="arr">↗</span></a>
+</div></div></div>
+<div class="scroll-cue">Discover</div>
+<svg class="hero-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="#f7f3ef" stroke-width="1.5"/><path d="M48 61 C31 59 25 43 31 23 C44 27 54 37 56 49 C58 56 54 61 48 61Z M52 61 C68 56 72 39 67 23 C56 28 49 39 49 49 C48 55 49 59 52 61Z" fill="#f7f3ef"/><path d="M50 62 C47 77 54 84 68 82 C77 81 82 75 85 69" fill="none" stroke="#f7f3ef" stroke-width="3" stroke-linecap="round"/></svg>
+</section>
+<section class="section"><div class="wrap story-grid">
+<div class="story-photo reveal"><img loading="lazy" src="https://images.unsplash.com/photo-1494972308805-463bc619d34e?auto=format&fit=crop&w=1100&q=85" alt="Красные розы BLACK ROSES"><div class="story-caption">A little piece of beauty.</div></div>
+<div class="story-copy reveal"><div class="section-kicker">The art of flowers</div><h2 class="section-title">Больше, чем<br><em>просто цветы.</em></h2><p class="section-copy">Каждая композиция — это настроение, внимание к деталям и эмоция, которую хочется сохранить. Выберите удобный способ связи и оформите заказ в несколько касаний.</p><a class="btn btn-primary" href="https://buchet.uz/catalog/shop/6ad9bab2c8595f2271d63020" target="_blank" rel="noopener">Выбрать и заказать <span class="arr">↗</span></a></div>
+</div></section>
+<section class="section social"><div class="wrap">
+<div class="social-head reveal"><div class="section-kicker">Stay connected</div><h2 class="section-title">Мы всегда <em>рядом.</em></h2><p class="section-copy">Следите за нашими букетами, новостями и специальными предложениями в социальных сетях.</p></div>
+<div class="social-grid">
+<a class="social-card reveal" href="https://instagram.com/blackroses_uz" target="_blank" rel="noopener"><span class="social-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></span><small>Instagram · Main</small><strong>@blackroses_uz</strong><span class="go">Открыть профиль ↗</span></a>
+<a class="social-card reveal" href="https://instagram.com/darkroses_uz" target="_blank" rel="noopener"><span class="social-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></span><small>Instagram · Dark Roses</small><strong>@darkroses_uz</strong><span class="go">Открыть профиль ↗</span></a>
+<a class="social-card reveal" href="https://instagram.com/blackroses_yashnabad" target="_blank" rel="noopener"><span class="social-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></span><small>Instagram · Yashnabad</small><strong>@blackroses_yashnabad</strong><span class="go">Открыть профиль ↗</span></a>
+<a class="social-card reveal" href="https://t.me/Blackrosespremium" target="_blank" rel="noopener"><span class="social-icon"><svg viewBox="0 0 24 24"><path d="m21 3-7.1 18-3.5-7.3L3 10.2 21 3Z"/><path d="m10.4 13.7 4.5-4.3"/></svg></span><small>Telegram · Channel</small><strong>BLACK ROSES PREMIUM</strong><span class="go">Подписаться ↗</span></a>
+<a class="social-card reveal" href="https://t.me/DarkRoses_uz" target="_blank" rel="noopener"><span class="social-icon"><svg viewBox="0 0 24 24"><path d="m21 3-7.1 18-3.5-7.3L3 10.2 21 3Z"/><path d="m10.4 13.7 4.5-4.3"/></svg></span><small>Telegram · Personal manager</small><strong>Связаться с администратором</strong><span class="go">Написать ↗</span></a>
+<a class="social-card reveal" href="tel:+998998030033"><span class="social-icon"><svg viewBox="0 0 24 24"><path d="M7 3h3l2 5-2.4 1.7a14 14 0 0 0 4.7 4.7L16 12l5 2v3a3 3 0 0 1-3 3A16 16 0 0 1 4 6a3 3 0 0 1 3-3Z"/></svg></span><small>Direct contact</small><strong>+998 99 803 00 33</strong><span class="go">Позвонить ↗</span></a>
+</div></div></section>
+<section class="contact"><div class="wrap reveal">
+<svg class="contact-logo" viewBox="0 0 100 100" role="img" aria-label="BLACK ROSES"><circle cx="50" cy="50" r="46" fill="none" stroke="#f7f3ef" stroke-width="2"/><path d="M48 61 C31 59 25 43 31 23 C44 27 54 37 56 49 C58 56 54 61 48 61Z M52 61 C68 56 72 39 67 23 C56 28 49 39 49 49 C48 55 49 59 52 61Z" fill="#f7f3ef"/><path d="M50 62 C47 77 54 84 68 82 C77 81 82 75 85 69" fill="none" stroke="#f7f3ef" stroke-width="3" stroke-linecap="round"/><path d="M43 70 C35 66 29 68 24 72 C32 75 38 76 43 70Z M57 70 C65 65 71 67 76 71 C68 75 62 75 57 70Z" fill="#f7f3ef"/></svg>
+<h2>BLACK ROSES</h2><p>С любовью к каждому цветку. С заботой о каждом заказе.</p>
+<div class="contact-actions"><a class="btn btn-primary" href="https://buchet.uz/catalog/shop/6ad9bab2c8595f2271d63020" target="_blank" rel="noopener">Оформить заказ <span class="arr">↗</span></a><a class="btn" href="https://t.me/DarkRoses_uz" target="_blank" rel="noopener">Связаться с нами <span class="arr">↗</span></a></div>
+<a class="phone" href="tel:+998998030033">+998 99 803 00 33</a>
+</div></section>
+</main>
+<footer class="footer"><div class="wrap footer-inner"><span>© <b>BLACK ROSES</b> · TASHKENT</span><span>Flowers that speak without words</span><span>Digital experience by SMART TAP</span></div></footer>
+<div class="floating-order"><a class="btn btn-primary" href="https://buchet.uz/catalog/shop/6ad9bab2c8595f2271d63020" target="_blank" rel="noopener">Оформить заказ <span class="arr">↗</span></a></div>
+<script>
+(function(){
+ const host=document.getElementById('petals');
+ if(host && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  for(let i=0;i<17;i++){const p=document.createElement('i');p.className='petal';p.style.left=(Math.random()*100)+'%';p.style.animationDuration=(12+Math.random()*14)+'s';p.style.animationDelay=(-Math.random()*22)+'s';p.style.opacity=(.2+Math.random()*.45);p.style.transform='scale('+(0.55+Math.random()*.8)+')';host.appendChild(p)}
+ }
+ const items=document.querySelectorAll('.reveal');
+ if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.12});items.forEach(el=>io.observe(el))}else{items.forEach(el=>el.classList.add('visible'))}
+ const hero=document.querySelector('[data-parallax]');
+ let ticking=false;
+ window.addEventListener('scroll',()=>{if(!hero||ticking||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;ticking=true;requestAnimationFrame(()=>{const y=Math.min(window.scrollY,600);hero.style.transform='scale(1.06) translate3d(0,'+(y*.12)+'px,0)';ticking=false})},{passive:true});
+})();
+</script>
+</body></html>
