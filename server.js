@@ -418,6 +418,10 @@ app.get('/api/clients/:slug/qr', async (req, res) => {
 
 app.get('/t/:slug', async (req, res) => {
   try {
+    if (req.params.slug === 'blackroses') {
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+      return res.sendFile(path.join(__dirname, 'public', 'blackroses.html'));
+    }
     const client = await getClient(req.params.slug);
     if (!client) return res.status(404).sendFile(path.join(__dirname, 'public', 'not-found.html'));
 
