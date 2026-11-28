@@ -422,6 +422,10 @@ app.get('/t/:slug', async (req, res) => {
       res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
       return res.sendFile(path.join(__dirname, 'public', 'blackroses.html'));
     }
+    if (req.params.slug === 'mistergold') {
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+      return res.sendFile(path.join(__dirname, 'public', 'mistergold.html'));
+    }
     const client = await getClient(req.params.slug);
     if (!client) return res.status(404).sendFile(path.join(__dirname, 'public', 'not-found.html'));
 
